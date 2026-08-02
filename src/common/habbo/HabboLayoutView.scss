@@ -1,0 +1,221 @@
+.habbo-layout-view {
+    position: relative;
+    overflow: visible;
+    image-rendering: pixelated;
+}
+
+.habbo-layout-node {
+    position: absolute;
+    overflow: visible;
+
+    > .habbo-skin-view {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    &.is-interactive {
+        cursor: pointer;
+        outline: 0;
+    }
+}
+
+.habbo-layout-node-tab_context {
+    overflow: hidden;
+}
+
+.habbo-layout-node-children {
+    position: absolute;
+}
+
+.habbo-layout-appended-slot {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+}
+
+.habbo-layout-frame-caption {
+    position: absolute;
+    z-index: 1;
+    top: 7px;
+    right: 32px;
+    left: 32px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    white-space: nowrap;
+    pointer-events: none;
+
+    &.has-background {
+        top: 6px;
+        right: 6px;
+        left: 6px;
+        height: 15px;
+    }
+}
+
+.habbo-layout-frame-caption-background {
+    display: flex;
+    height: 15px;
+    max-width: 100%;
+    box-sizing: border-box;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1px 8px;
+    overflow: hidden;
+
+    > canvas {
+        display: block;
+        flex: 0 0 auto;
+    }
+}
+
+.habbo-layout-frame-drag-region {
+    position: absolute;
+    z-index: 1;
+    top: 6px;
+    right: 6px;
+    left: 6px;
+    height: 15px;
+    cursor: move;
+}
+
+.habbo-layout-frame-close {
+    position: absolute;
+    z-index: 2;
+    top: 7px;
+    right: 9px;
+    width: 19px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    &.theme-blue {
+        top: 6px;
+        right: 6px;
+        width: 15px;
+        height: 15px;
+    }
+
+    &.theme-illumina-light,
+    &.theme-illumina-dark,
+    &.theme-illumina-purple {
+        top: 6px;
+        right: 7px;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.habbo-layout-frame-scaler {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: nwse-resize;
+    touch-action: none;
+
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    &.theme-blue {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+.habbo-layout-node-caption {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    pointer-events: none;
+
+    canvas {
+        width: auto !important;
+        height: auto !important;
+        max-width: none;
+        max-height: none;
+        image-rendering: pixelated;
+    }
+    &.align-left { justify-items: start; text-align: left; }
+    &.align-center { justify-items: center; text-align: center; }
+    &.align-right { justify-items: end; text-align: right; }
+}
+
+.habbo-layout-node-text .habbo-layout-node-caption,
+.habbo-layout-node-label .habbo-layout-node-caption {
+    display: block;
+
+    &.align-center,
+    &.align-right { display: grid; }
+}
+
+.habbo-layout-node-button > .habbo-layout-node-caption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.habbo-layout-placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    color: #5e6870;
+    text-align: center;
+    background: rgba(230, 234, 236, .58);
+    border: 1px dashed #8b959d;
+    pointer-events: none;
+
+    span {
+        max-width: 150px;
+        overflow: hidden;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    small { font-size: 8px; }
+}
+
+.habbo-layout-separator {
+    position: absolute;
+    inset: 0;
+    background: #8f969c;
+}
+
+.habbo-layout-static-bitmap {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+.habbo-layout-slot {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    overflow: hidden;
+}

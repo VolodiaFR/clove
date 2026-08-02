@@ -1,0 +1,30 @@
+node_modules/
+.yarn/*
+!.yarn/patches/
+!.yarn/plugins/
+!.yarn/releases/
+!.yarn/sdks/
+
+# Generated application and content output
+dist/
+release/
+content-release/
+public/assets/truffle/
+
+# Local release configuration and signing material
+electron-builder.env
+.env
+.env.*
+!.env.example
+*.key
+*.mobileprovision
+*.p12
+*.pem
+*.pfx
+
+# Editors, logs, and operating-system files
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db

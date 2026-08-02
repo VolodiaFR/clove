@@ -1,0 +1,3626 @@
+@use 'sass:color';
+
+$ink: #20262d;
+$muted: #64707c;
+$line: #c7cdd2;
+$soft-line: #dce1e5;
+$panel: #f4f6f7;
+$accent: #b83a64;
+$accent-dark: #872747;
+$stage: #747b82;
+
+.clove-app {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    color: $ink;
+    background: #e8ebed;
+    font-family: Ubuntu;
+    font-size: 12px;
+    user-select: none;
+
+    * {
+        box-sizing: border-box;
+    }
+
+    button,
+    input,
+    select {
+        font: inherit;
+    }
+
+    button {
+        color: $ink;
+    }
+}
+
+.clove-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background: linear-gradient(#fff, #e8ebed);
+    border-bottom: 1px solid #aeb5bb;
+    min-height: 38px;
+    flex: 0 0 38px;
+
+    button {
+        height: 27px;
+        padding: 0 10px;
+        background: linear-gradient(#fff, #e4e8eb);
+        border: 1px solid #aeb5bb;
+        border-radius: 3px;
+        box-shadow: inset 0 1px #fff;
+
+        &:hover:not(:disabled) {
+            border-color: #7e8992;
+            background: #fff;
+        }
+
+        &:disabled {
+            color: #9da4aa;
+        }
+    }
+
+    label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-left: 6px;
+        color: #505a63;
+    }
+
+    select,
+    input[type='range'] {
+        height: 23px;
+    }
+
+    input[type='range'] {
+        width: 82px;
+        accent-color: $accent;
+    }
+
+    output {
+        width: 34px;
+        color: $muted;
+    }
+
+    .clove-habbo-select {
+        width: 58px;
+    }
+}
+
+.clove-habbo-select {
+    position: relative;
+    display: inline-grid;
+    width: 100%;
+    min-width: 64px;
+    height: 22px;
+    align-items: center;
+    overflow: hidden;
+
+    > .habbo-skin-view {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+
+    .clove-habbo-select-label {
+        position: relative;
+        z-index: 1;
+        display: block;
+        min-width: 0;
+        padding: 0 23px 0 6px;
+        overflow: hidden;
+        pointer-events: none;
+
+        .truffle-text-view {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    }
+
+    select {
+        position: absolute;
+        z-index: 2;
+        inset: 0;
+        width: 100%;
+        height: 100% !important;
+        margin: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+}
+
+.clove-toolbar-separator {
+    align-self: stretch;
+    width: 1px;
+    margin: 1px 4px;
+    background: #c3c9ce;
+    box-shadow: 1px 0 #fff;
+}
+
+.clove-check input {
+    accent-color: $accent;
+}
+
+.clove-error {
+    position: fixed;
+    z-index: 1000;
+    top: 92px;
+    left: 50%;
+    max-width: 600px;
+    padding: 9px 14px;
+    color: #fff;
+    background: #a82e46;
+    border-radius: 4px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.28);
+    transform: translateX(-50%);
+}
+
+.clove-workspace {
+    display: grid;
+    min-height: 0;
+    flex: 1 1 auto;
+    grid-template-columns: 306px minmax(360px, 1fr) 330px;
+    min-height: 0;
+}
+
+.clove-left-panel,
+.clove-inspector {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    background: $panel;
+}
+
+.clove-left-panel {
+    border-right: 1px solid #9fa7ae;
+}
+
+.clove-inspector {
+    border-left: 1px solid #9fa7ae;
+}
+
+.clove-panel-heading {
+    display: flex;
+    min-height: 31px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 9px;
+    background: linear-gradient(#fdfefe, #e0e4e7);
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #b4bbc1;
+
+    strong {
+        font-size: 11px;
+        letter-spacing: .5px;
+        text-transform: uppercase;
+    }
+
+    span {
+        color: $muted;
+        font-size: 10px;
+    }
+}
+
+.clove-tree {
+    min-height: 130px;
+    flex: 0 1 40%;
+    overflow: auto;
+    background: #fff;
+
+    ul {
+        margin: 0;
+        padding: 3px 0 5px 15px;
+        list-style: none;
+    }
+
+    > ul {
+        padding-left: 2px;
+    }
+
+    button {
+        display: grid;
+        grid-template-columns: 15px 78px minmax(0, 1fr);
+        width: 100%;
+        height: 22px;
+        align-items: center;
+        padding: 0 4px;
+        text-align: left;
+        background: transparent;
+        border: 0;
+        border-radius: 2px;
+
+        &:hover {
+            background: #eef1f3;
+        }
+
+        &.selected {
+            color: #fff;
+            background: $accent;
+        }
+    }
+}
+
+.clove-node-visual {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    transform-origin: center center;
+}
+
+// The Electron shell uses Clove's Habbo frame as the real desktop title bar.
+.clove-ubuntu-window-title.is-desktop-titlebar {
+    right: 104px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    pointer-events: auto;
+    -webkit-app-region: drag;
+
+    > canvas { pointer-events: none; }
+}
+
+.clove-app-title-icon {
+    width: 23px;
+    height: 25px;
+    flex: 0 0 23px;
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+.clove-desktop-window-controls {
+    position: absolute;
+    z-index: 100;
+    top: 7px;
+    right: 9px;
+    display: flex;
+    height: 20px;
+    align-items: center;
+    gap: 13px;
+    -webkit-app-region: no-drag;
+}
+
+.clove-update-indicator {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    height: 25px;
+    max-width: 290px;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    padding: 0;
+    overflow: hidden;
+    color: #fff;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+
+    > img {
+        width: 25px;
+        height: 25px;
+        flex: 0 0 25px;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+
+    > canvas { flex: 0 1 auto; pointer-events: none; }
+
+    &:hover { filter: brightness(1.12); }
+    &:active { transform: translateY(1px); }
+}
+
+.clove-version-label {
+    display: block;
+    margin-left: auto;
+    margin-right: 2px;
+    opacity: .72;
+    pointer-events: none;
+}
+
+.clove-window-control {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    border: 0;
+    -webkit-app-region: no-drag;
+
+    > canvas,
+    > img {
+        display: block;
+        width: 20px;
+        height: 20px;
+        max-width: none;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+
+    > img.state-hovering { filter: brightness(1.12); }
+    > img.state-pressed { filter: brightness(.82); transform: translateY(1px); }
+}
+
+.clove-ubuntu-window-close.clove-window-control {
+    width: 19px;
+    height: 19px;
+    flex-basis: 19px;
+
+    > canvas { width: 19px; height: 19px; }
+}
+
+// Stage scrolling uses the same Habbo scrollbars as the editor side panels.
+.clove-stage-scroll-area {
+    width: 100%;
+    height: 100%;
+    background-color: #727980;
+    background-image: linear-gradient(45deg, rgba(255,255,255,.035) 25%, transparent 25%), linear-gradient(-45deg, rgba(255,255,255,.035) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(255,255,255,.035) 75%), linear-gradient(-45deg, transparent 75%, rgba(255,255,255,.035) 75%);
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    background-size: 16px 16px;
+
+    > .clove-scroll-viewport > .clove-scroll-content {
+        width: 100%;
+        height: 100%;
+        min-width: 100%;
+        min-height: 100%;
+    }
+}
+
+.clove-stage-scroller {
+    display: grid;
+    width: max-content;
+    min-width: 100%;
+    min-height: 100%;
+    padding: 64px;
+    overflow: visible;
+    place-items: start;
+    background: transparent;
+}
+
+// Asset thumbnails stay at their native pixel dimensions until they genuinely
+// need to be scaled down to fit the library card.
+.clove-asset-library > button:not(.clove-asset-load-more) {
+    display: grid;
+    min-height: 126px;
+    grid-template-rows: 98px auto auto;
+    align-items: center;
+}
+
+.clove-asset-thumbnail {
+    display: flex;
+    width: 100%;
+    height: 96px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: repeating-conic-gradient(#e2e6e8 0 25%, #f2f4f5 0 50%) 0 0 / 8px 8px;
+
+    > img {
+        display: block;
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 96px;
+        object-fit: contain;
+        image-rendering: pixelated;
+        background: transparent;
+    }
+}
+
+// Keep every editable field visually Truffle-rendered, including selection.
+.truffle-editable {
+    position: relative;
+    display: block;
+    min-width: 0;
+    min-height: 15px;
+    overflow: hidden;
+}
+
+.truffle-editable-render {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+
+    > canvas {
+        display: block;
+        image-rendering: pixelated;
+        transform: translate(var(--truffle-input-scroll-x, 0), var(--truffle-input-scroll-y, 0));
+    }
+}
+
+.truffle-editable > input,
+.truffle-editable > textarea {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: transparent !important;
+    background: transparent !important;
+    border: 0;
+    caret-color: transparent;
+    opacity: 0;
+    outline: 0;
+    resize: none;
+    -webkit-text-fill-color: transparent;
+
+    &::selection {
+        color: transparent;
+        background: transparent;
+        -webkit-text-fill-color: transparent;
+    }
+}
+
+.clove-habbo-input > input {
+    opacity: 0 !important;
+}
+
+.clove-inline-caption {
+    display: block;
+
+    .clove-inline-caption-editor {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.clove-sim-dropmenu {
+    > button {
+        font: inherit;
+
+        > span {
+            display: block;
+
+            canvas { display: block; image-rendering: pixelated; }
+        }
+
+        i::after {
+            width: 0;
+            height: 0;
+            margin: 2px auto 0;
+            content: '';
+            border-top: 5px solid #222;
+            border-right: 4px solid transparent;
+            border-left: 4px solid transparent;
+        }
+    }
+
+    > div button {
+        display: flex;
+        align-items: center;
+        font: inherit;
+
+        canvas { display: block; image-rendering: pixelated; }
+    }
+}
+
+.clove-color-swatch {
+    position: relative;
+    width: 30px;
+    height: 23px;
+    flex: 0 0 30px;
+    padding: 0;
+    background: repeating-conic-gradient(#aaa 0 25%, #eee 0 50%) 0 0 / 6px 6px;
+    border: 1px solid #161b1e;
+    box-shadow: inset 0 0 0 1px #fff;
+
+    > span {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        pointer-events: none;
+    }
+
+    &:hover,
+    &[aria-expanded='true'] { outline: 1px solid #fff; outline-offset: -3px; }
+}
+
+.clove-color-picker-panel {
+    position: fixed;
+    z-index: 30000;
+    display: grid;
+    width: 236px;
+    grid-template-rows: 112px 14px 27px;
+    gap: 3px;
+    padding: 4px;
+    color: #111;
+    background: #d8d5cc;
+    border: 1px solid #111;
+    box-shadow: inset 0 0 0 1px #fff, 3px 4px 0 rgba(0, 0, 0, .32);
+    image-rendering: pixelated;
+}
+
+.clove-color-picker-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 0 6px;
+    color: #fff;
+    background: #418db0;
+    border: 1px solid #1f526a;
+
+    > button {
+        position: relative;
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        color: transparent;
+        background: #dcd9cf;
+        border: 1px solid #111;
+        font-size: 0;
+
+        &::before,
+        &::after {
+            position: absolute;
+            top: 6px;
+            left: 2px;
+            width: 10px;
+            height: 2px;
+            background: #111;
+            content: '';
+        }
+
+        &::before { transform: rotate(45deg); }
+        &::after { transform: rotate(-45deg); }
+        &:hover { background: #fff; }
+        &:active { transform: translateY(1px); }
+    }
+}
+
+.clove-color-plane {
+    position: relative;
+    overflow: hidden;
+    cursor: crosshair;
+    touch-action: none;
+
+    &::before,
+    &::after {
+        position: absolute;
+        inset: 0;
+        content: '';
+        pointer-events: none;
+    }
+
+    &::before { background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); }
+    &::after { background: linear-gradient(to bottom, transparent, #000); }
+
+    > span {
+        position: absolute;
+        z-index: 2;
+        width: 9px;
+        height: 9px;
+        border: 1px solid #fff;
+        box-shadow: 0 0 0 1px #111;
+        transform: translate(-4px, -4px);
+        pointer-events: none;
+    }
+}
+
+.clove-color-hue {
+    position: relative;
+    background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+    border: 1px solid #111;
+    cursor: ew-resize;
+    touch-action: none;
+
+    > span {
+        position: absolute;
+        top: -3px;
+        bottom: -3px;
+        width: 3px;
+        background: #fff;
+        border: 1px solid #111;
+        transform: translateX(-1px);
+        pointer-events: none;
+    }
+}
+
+.clove-color-picker-values {
+    display: grid;
+    grid-template-columns: 25px minmax(0, 1fr) 68px;
+    align-items: center;
+    gap: 4px;
+
+    .clove-habbo-input { height: 23px; }
+
+    > canvas {
+        justify-self: end;
+        max-width: 68px;
+        image-rendering: pixelated;
+    }
+}
+
+.clove-color-picker-preview {
+    display: block;
+    width: 25px;
+    height: 23px;
+    border: 1px solid #111;
+}
+
+.clove-tree-eye {
+    font-size: 8px;
+    opacity: .7;
+}
+
+.clove-tree-type {
+    overflow: hidden;
+    color: #59646d;
+    font: 10px Ubuntu;
+    text-overflow: ellipsis;
+}
+
+.selected .clove-tree-type {
+    color: #f1ceda;
+}
+
+.clove-tree-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.clove-palette-search {
+    padding: 6px;
+    background: #eef1f3;
+    border-bottom: 1px solid $soft-line;
+
+    input {
+        width: 100%;
+        height: 27px;
+        padding: 0 8px;
+        background: #fff;
+        border: 1px solid #b8c0c6;
+        border-radius: 3px;
+        outline: 0;
+
+        &:focus {
+            border-color: $accent;
+            box-shadow: 0 0 0 2px rgba(184,58,100,.13);
+        }
+    }
+}
+
+.clove-palette {
+    display: grid;
+    min-height: 120px;
+    flex: 1 1 48%;
+    grid-template-columns: repeat(3, 1fr);
+    align-content: start;
+    gap: 1px;
+    padding: 5px;
+    overflow: auto;
+    background: #d9dee2;
+
+    button {
+        display: grid;
+        height: 68px;
+        grid-template-rows: 42px 1fr;
+        min-width: 0;
+        padding: 2px;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #c5cbd0;
+
+        &:hover {
+            z-index: 1;
+            border-color: $accent;
+        }
+
+        > span {
+            position: relative;
+            display: block;
+            width: 58px;
+            height: 36px;
+            place-self: center;
+
+            canvas {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        small {
+            overflow: hidden;
+            color: #555f67;
+            font-size: 9px;
+            line-height: 11px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}
+
+.clove-stage-panel {
+    display: grid;
+    min-width: 0;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr);
+    background: $stage;
+}
+
+.clove-stage-scroller {
+    position: relative;
+    display: grid;
+    overflow: auto;
+    place-items: center;
+    padding: 64px;
+    background-color: #727980;
+    background-image: linear-gradient(45deg, rgba(255,255,255,.035) 25%, transparent 25%), linear-gradient(-45deg, rgba(255,255,255,.035) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(255,255,255,.035) 75%), linear-gradient(-45deg, transparent 75%, rgba(255,255,255,.035) 75%);
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    background-size: 16px 16px;
+}
+
+.clove-stage-canvas {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.clove-stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    background: transparent;
+    image-rendering: pixelated;
+    transform-origin: top left;
+}
+
+.clove-node {
+    position: absolute;
+    overflow: visible;
+    touch-action: none;
+
+    > .clove-node-visual > .habbo-skin-view {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    &.show-debug-rect {
+        outline: 1px dashed rgba(0, 183, 255, .45);
+        outline-offset: -1px;
+    }
+
+    &.is-selected {
+        outline: 1px solid #ff2a72;
+        box-shadow: 0 0 0 1px rgba(255,255,255,.9);
+    }
+}
+
+.clove-stage.is-capturing {
+    .clove-node.is-selected {
+        outline: 0;
+        box-shadow: none;
+    }
+
+    .clove-node.show-debug-rect {
+        outline: 0;
+    }
+}
+
+.clove-node.is-exporting-root,
+.clove-node.is-exporting-root .clove-node,
+.clove-stage.is-exporting .clove-node {
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+.clove-node-tab_context {
+    overflow: hidden;
+}
+
+.clove-node-children {
+    position: absolute;
+}
+
+.clove-frame-caption {
+    position: absolute;
+    z-index: 1;
+    top: 7px;
+    right: 32px;
+    left: 32px;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+
+    &.has-background {
+        top: 6px;
+        right: 6px;
+        left: 6px;
+        height: 15px;
+    }
+}
+
+.clove-frame-caption-background {
+    display: flex;
+    height: 15px;
+    max-width: 100%;
+    box-sizing: border-box;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1px 8px;
+    overflow: hidden;
+
+    > canvas {
+        display: block;
+        flex: 0 0 auto;
+    }
+}
+
+.clove-frame-close {
+    position: absolute;
+    z-index: 2;
+    top: 7px;
+    right: 9px;
+    width: 19px;
+    height: 20px;
+    pointer-events: none;
+
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    &.theme-blue {
+        top: 6px;
+        right: 6px;
+        width: 15px;
+        height: 15px;
+    }
+
+    &.theme-illumina-light,
+    &.theme-illumina-dark,
+    &.theme-illumina-purple {
+        top: 6px;
+        right: 7px;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.clove-frame-scaler {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    &.theme-blue {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+.clove-node-caption {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    pointer-events: none;
+
+    canvas {
+        width: auto !important;
+        height: auto !important;
+        max-width: none;
+        max-height: none;
+        image-rendering: pixelated;
+    }
+}
+
+.clove-node-text .clove-node-caption,
+.clove-node-label .clove-node-caption {
+    display: block;
+}
+
+.clove-node-button > .clove-node-visual > .clove-node-caption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clove-placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    color: #5e6870;
+    text-align: center;
+    background: rgba(230,234,236,.58);
+    border: 1px dashed #8b959d;
+    pointer-events: none;
+
+    span {
+        max-width: 150px;
+        overflow: hidden;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    small {
+        color: #7e8991;
+        font-size: 9px;
+    }
+}
+
+.clove-resize-handle {
+    position: absolute;
+    z-index: 100;
+    width: 7px;
+    height: 7px;
+    background: #fff;
+    border: 1px solid #d31054;
+    touch-action: none;
+}
+
+.handle-nw { top: -4px; left: -4px; cursor: nwse-resize; }
+.handle-n { top: -4px; left: calc(50% - 3px); cursor: ns-resize; }
+.handle-ne { top: -4px; right: -4px; cursor: nesw-resize; }
+.handle-e { top: calc(50% - 3px); right: -4px; cursor: ew-resize; }
+.handle-se { right: -4px; bottom: -4px; cursor: nwse-resize; }
+.handle-s { bottom: -4px; left: calc(50% - 3px); cursor: ns-resize; }
+.handle-sw { bottom: -4px; left: -4px; cursor: nesw-resize; }
+.handle-w { top: calc(50% - 3px); left: -4px; cursor: ew-resize; }
+
+.clove-inspector-summary {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 7px;
+    padding: 9px;
+    background: #fff;
+    border-bottom: 1px solid $soft-line;
+
+    > span {
+        padding: 3px 5px;
+        color: #fff;
+        background: $accent-dark;
+        border-radius: 2px;
+        font: 9px Ubuntu;
+    }
+
+    code {
+        color: $muted;
+        font-size: 10px;
+    }
+}
+
+.clove-properties {
+    flex: 0 0 auto;
+    background: #fff;
+    border-bottom: 1px solid $line;
+}
+
+.clove-property {
+    display: grid;
+    min-height: 27px;
+    grid-template-columns: 104px minmax(0, 1fr);
+    align-items: center;
+    border-bottom: 1px solid #edf0f2;
+
+    > span {
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        padding-left: 8px;
+        color: #56616a;
+        background: #f5f7f8;
+        border-right: 1px solid #e1e5e8;
+    }
+
+    input[type='text'],
+    input:not([type]) {
+        min-width: 0;
+    }
+
+    input {
+        width: 100%;
+        height: 26px;
+        padding: 0 6px;
+        background: transparent;
+        border: 0;
+        outline: 0;
+
+        &:focus {
+            box-shadow: inset 0 0 0 1px $accent;
+        }
+    }
+
+    input[type='checkbox'] {
+        width: 14px;
+        height: 14px;
+        margin-left: 7px;
+        accent-color: $accent;
+    }
+}
+
+.clove-panel-heading.subheading {
+    margin-top: 0;
+}
+
+.clove-variables {
+    min-height: 0;
+    overflow: auto;
+    background: #fff;
+
+    > div {
+        display: grid;
+        min-height: 27px;
+        grid-template-columns: 1fr 1fr 55px;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 7px;
+        border-bottom: 1px solid #edf0f2;
+
+        span,
+        code {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        code {
+            color: $accent-dark;
+            font-size: 10px;
+        }
+
+        small {
+            color: #89939a;
+            text-align: right;
+            font-size: 9px;
+        }
+    }
+}
+
+.clove-empty-state {
+    padding: 28px 22px;
+    color: $muted;
+    text-align: center;
+    line-height: 1.5;
+}
+
+@media (max-width: 1050px) {
+    .clove-workspace {
+        grid-template-columns: 250px minmax(330px, 1fr) 280px;
+    }
+
+}
+
+// Habbo-native editor chrome
+
+.clove-app {
+    color: #1d1d1d;
+    background: #666d73;
+    font-family: Ubuntu;
+    font-size: 13px;
+}
+
+.clove-ubuntu-window {
+    position: relative;
+    display: block;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    color: #111;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+
+    > .clove-ubuntu-window-skin {
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+}
+
+.clove-ubuntu-window-title {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 6px;
+    right: 6px;
+    display: grid;
+    height: 32px;
+    place-items: center;
+    overflow: hidden;
+    pointer-events: none;
+
+    canvas { image-rendering: pixelated; }
+}
+
+.clove-ubuntu-window-meta {
+    position: absolute;
+    right: 7px;
+}
+
+.clove-ubuntu-window-content {
+    position: absolute;
+    z-index: 1;
+    inset: 35px 6px 6px;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: #ecebe4;
+}
+
+.clove-ubuntu-window-close {
+    position: absolute;
+    z-index: 5;
+    top: 8px;
+    right: 9px;
+    width: 19px;
+    height: 19px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+
+    > .habbo-skin-view {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.clove-toolbar-window {
+    width: 100%;
+    min-height: 108px;
+    flex: 0 0 108px;
+
+    > .clove-ubuntu-window-content {
+        display: flex;
+    }
+}
+
+.clove-toolbar {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    flex: 1 1 auto;
+    padding: 3px 5px;
+    flex-wrap: wrap;
+    align-content: center;
+    background: #ecebe4;
+    border: 0;
+
+    .clove-habbo-button {
+        height: 28px;
+        padding: 0 13px;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .clove-habbo-select { width: 66px; }
+}
+
+.clove-toolbar-field {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.clove-habbo-button {
+    position: relative;
+    display: grid;
+    width: max-content;
+    min-width: 72px;
+    height: 28px;
+    flex: 0 0 auto;
+    padding: 0 14px;
+    place-items: center;
+    overflow: hidden;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+
+    > .habbo-skin-view {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+
+    > span {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        pointer-events: none;
+    }
+
+    &.active { filter: brightness(.88); }
+    &:disabled { opacity: .48; }
+}
+
+.clove-habbo-input {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: 23px;
+
+    > .habbo-skin-view {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+
+    > input {
+        position: absolute;
+        z-index: 1;
+        inset: 2px 4px;
+        width: calc(100% - 8px);
+        height: calc(100% - 4px);
+        min-width: 0;
+        padding: 0 2px;
+        color: #111;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        outline: 0;
+        font-family: Ubuntu;
+        font-size: 13px;
+        appearance: textfield;
+    }
+
+    input::-webkit-inner-spin-button,
+    input::-webkit-outer-spin-button { margin: 0; appearance: none; }
+}
+
+.clove-habbo-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: max-content;
+    cursor: pointer;
+
+    &.is-disabled { opacity: .48; }
+}
+
+.clove-habbo-checkbox-box {
+    position: relative;
+    display: block;
+    width: 19px;
+    height: 20px;
+    flex: 0 0 19px;
+
+    > .habbo-skin-view {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+
+    > input {
+        position: absolute;
+        z-index: 2;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+}
+
+.clove-workspace {
+    gap: 5px;
+    padding: 5px;
+    background: #666d73;
+}
+
+.clove-left-panel {
+    display: grid;
+    min-height: 0;
+    grid-template-rows: minmax(145px, 38%) minmax(230px, 62%);
+    gap: 5px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+}
+
+.clove-hierarchy-window .clove-ubuntu-window-content,
+.clove-library-window .clove-ubuntu-window-content,
+.clove-inspector .clove-ubuntu-window-content {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    background: #ecebe4;
+}
+
+.clove-tree {
+    width: 100%;
+    min-height: 0;
+    height: 100%;
+    flex: 1 1 auto;
+    background: #ecebe4;
+}
+
+.clove-library-window .clove-unified-library {
+    min-height: 0;
+    flex: 1 1 auto;
+}
+
+.clove-library-filters {
+    display: flex;
+    gap: 3px;
+    padding: 3px 5px;
+    background: #ecebe4;
+
+    .clove-habbo-button { flex: 1 1 0; }
+}
+
+.clove-library-refiners,
+.clove-palette-search {
+    background: #ecebe4;
+}
+
+.clove-inspector {
+    display: block;
+    background: transparent;
+    border: 0;
+}
+
+.clove-inspector-scroll {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: auto;
+}
+
+.clove-simulation-tools > .clove-habbo-button { width: 100%; }
+
+.clove-property-boolean.clove-habbo-checkbox {
+    display: grid;
+    grid-template-columns: 1fr 24px;
+
+    .clove-habbo-checkbox-box { grid-column: 2; grid-row: 1; }
+    > canvas { grid-column: 1; grid-row: 1; }
+}
+
+.clove-dialog-form {
+    width: 390px;
+    height: 300px;
+}
+
+.clove-dialog {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+
+    > .clove-ubuntu-window-content {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+        overflow: visible;
+    }
+
+    label { display: grid; gap: 4px; }
+    > .clove-ubuntu-window-content > div { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    footer { display: flex; justify-content: flex-end; gap: 7px; }
+}
+
+// Clove authoring workflow
+
+.clove-menu-wrap {
+    position: relative;
+}
+
+.clove-menu {
+    position: absolute;
+    z-index: 1000;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 260px;
+    padding: 4px;
+    background: #fff;
+    border: 1px solid #9ea7ae;
+    border-radius: 4px;
+    box-shadow: 0 7px 24px rgba(24, 29, 33, .25);
+
+    button {
+        display: flex;
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px 10px;
+        text-align: left;
+        background: transparent;
+        border: 0;
+
+        &:hover {
+            background: #f2e7eb;
+        }
+
+        small {
+            margin-top: 2px;
+            color: $muted;
+            line-height: 1.35;
+        }
+    }
+}
+
+.clove-mode-switch {
+    display: flex;
+    margin-right: 4px;
+
+    button {
+        border-radius: 0;
+
+        &:first-child { border-radius: 3px 0 0 3px; }
+        &:last-child { margin-left: -1px; border-radius: 0 3px 3px 0; }
+
+        &.active {
+            z-index: 1;
+            color: #fff;
+            background: $accent;
+            border-color: $accent-dark;
+        }
+    }
+}
+
+.clove-alignbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: #dfe3e6;
+    border-bottom: 1px solid #a9b0b6;
+    flex: 0 0 31px;
+
+    > span:first-child {
+        margin-right: 4px;
+        color: #59636c;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .35px;
+        text-transform: uppercase;
+    }
+
+    button {
+        height: 23px;
+        padding: 0 8px;
+        background: linear-gradient(#fff, #e7eaec);
+        border: 1px solid #aeb5bb;
+        border-radius: 3px;
+        font-size: 10px;
+
+        &:disabled {
+            color: #9ba3a9;
+        }
+    }
+}
+
+.clove-error {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    button {
+        color: #fff;
+        background: transparent;
+        border: 0;
+        font-size: 18px;
+    }
+}
+
+.clove-tree {
+    .clove-tree-row {
+        position: relative;
+        display: grid;
+        grid-template-columns: 22px minmax(0, 1fr);
+        min-width: 190px;
+        height: 23px;
+        align-items: center;
+        border-radius: 2px;
+        cursor: grab;
+
+        &:active {
+            cursor: grabbing;
+        }
+
+        &:hover {
+            background: #eef1f3;
+        }
+
+        &.selected {
+            color: #fff;
+            background: $accent;
+        }
+    }
+
+    .clove-tree-visibility,
+    .clove-tree-select {
+        display: block;
+        width: 100%;
+        height: 23px;
+        padding: 0;
+        color: inherit;
+        text-align: left;
+        background: transparent;
+        border: 0;
+    }
+
+    .clove-tree-visibility {
+        text-align: center;
+        opacity: .75;
+    }
+
+    .clove-tree-select {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 5px;
+        padding-right: 5px;
+    }
+
+    .clove-tree-name {
+        flex: 0 1 auto;
+    }
+
+    .clove-tree-type {
+        flex: 0 10000 auto;
+        color: #7a858d;
+        font: 9px Ubuntu;
+    }
+
+    .selected .clove-tree-type {
+        color: #f3d5df;
+    }
+}
+
+.clove-library-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid #aeb5bb;
+    border-bottom: 1px solid #aeb5bb;
+
+    button {
+        height: 29px;
+        background: linear-gradient(#fff, #e2e6e9);
+        border: 0;
+        border-right: 1px solid #c3c9ce;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .3px;
+        text-transform: uppercase;
+
+        &.active {
+            color: $accent-dark;
+            background: #fff;
+            box-shadow: inset 0 -2px $accent;
+        }
+    }
+}
+
+.clove-widget-library,
+.clove-raw-skins,
+.clove-asset-library {
+    min-height: 150px;
+    flex: 1 1 60%;
+    overflow: auto;
+    background: #e1e5e8;
+}
+
+.clove-library-help {
+    padding: 6px 8px;
+    color: #69747c;
+    background: #f8f9fa;
+    border-bottom: 1px solid #ccd2d7;
+    font-size: 9px;
+    line-height: 1.35;
+}
+
+.clove-widget-card {
+    display: grid;
+    width: calc(100% - 8px);
+    min-height: 58px;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: 7px;
+    margin: 4px;
+    padding: 5px;
+    text-align: left;
+    background: #fff;
+    border: 1px solid #c2c9ce;
+    border-radius: 3px;
+    cursor: grab;
+
+    &.has-preview {
+        grid-template-columns: 72px minmax(0, 1fr);
+    }
+
+    &:hover {
+        border-color: $accent;
+        box-shadow: 0 1px 3px rgba(50, 25, 34, .12);
+    }
+
+    &:active {
+        cursor: grabbing;
+    }
+
+    > span:last-child {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+    }
+
+    strong {
+        margin-bottom: 2px;
+        font-size: 11px;
+    }
+
+    small {
+        display: -webkit-box;
+        overflow: hidden;
+        color: #707a82;
+        font-size: 9px;
+        line-height: 1.25;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+}
+
+.clove-widget-preview {
+    position: relative;
+    display: block;
+    width: 66px;
+    height: 40px;
+    overflow: hidden;
+    background: repeating-conic-gradient(#e8ebed 0 25%, #f7f8f9 0 50%) 0 0 / 10px 10px;
+    border: 1px solid #d0d5d9;
+
+    > canvas,
+    .clove-widget-thumbnail,
+    .clove-widget-thumbnail > canvas,
+    .clove-widget-thumbnail > img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+    }
+
+}
+
+.clove-raw-skins {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-content: start;
+    gap: 3px;
+    padding: 4px;
+
+    .clove-library-help {
+        grid-column: 1 / -1;
+        margin: -4px -4px 1px;
+    }
+
+    > div:not(.clove-library-help) {
+        display: grid;
+        min-width: 0;
+        height: 67px;
+        grid-template-rows: 43px 1fr;
+        padding: 2px;
+        background: #fff;
+        border: 1px solid #c5cbd0;
+
+        > span {
+            position: relative;
+            display: block;
+            width: 60px;
+            height: 38px;
+            place-self: center;
+
+            canvas {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        small {
+            overflow: hidden;
+            color: #5d6770;
+            font-size: 8px;
+            text-align: center;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}
+
+.clove-asset-library {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: 4px;
+    padding: 4px;
+
+    .clove-library-help {
+        grid-column: 1 / -1;
+        margin: -4px -4px 0;
+    }
+
+    > div:not(.clove-library-help) {
+        min-width: 0;
+        padding: 4px;
+        background: #fff;
+        border: 1px solid #c5cbd0;
+
+        img {
+            display: block;
+            width: 100%;
+            height: 56px;
+            object-fit: contain;
+            image-rendering: pixelated;
+            background: #edf0f2;
+        }
+
+        small {
+            display: block;
+            overflow: hidden;
+            margin-top: 3px;
+            color: #5d6770;
+            font-size: 8px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}
+
+.clove-stage-scroller {
+    place-items: start;
+}
+
+.clove-node.is-previewing {
+    cursor: default;
+
+    &.clove-node-button,
+    &.clove-node-tab_container_button,
+    &.clove-node-dropmenu {
+        cursor: pointer;
+    }
+}
+
+.clove-frame-caption {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.clove-node-caption {
+    &.align-left { justify-items: start; text-align: left; }
+    &.align-center { justify-items: center; text-align: center; }
+    &.align-right { justify-items: end; text-align: right; }
+}
+
+.clove-node-text .clove-node-caption,
+.clove-node-label .clove-node-caption {
+    &.align-center { display: grid; }
+    &.align-right { display: grid; }
+}
+
+.clove-inline-caption {
+    position: absolute;
+    z-index: 1000;
+    inset: 1px;
+    min-width: 0;
+    padding: 2px 4px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    outline: 0;
+    user-select: text;
+}
+
+.clove-separator-line {
+    position: absolute;
+    inset: 0;
+    background: #8f969c;
+}
+
+.clove-inspector-scroll {
+    min-height: 0;
+    overflow: auto;
+}
+
+.clove-multi-summary,
+.clove-frame-title-note {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px;
+    background: #fff;
+    border-bottom: 1px solid $line;
+
+    span {
+        color: $muted;
+        line-height: 1.4;
+    }
+}
+
+.clove-frame-title-note {
+    background: #f8f0f3;
+    border-left: 3px solid $accent;
+}
+
+.clove-inspector-heading {
+    display: flex;
+    height: 27px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    color: #5b656d;
+    background: linear-gradient(#f6f8f9, #e6eaec);
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #c3c9ce;
+
+    strong {
+        font-size: 10px;
+        letter-spacing: .35px;
+        text-transform: uppercase;
+    }
+
+    span {
+        color: #879098;
+        font-size: 9px;
+    }
+}
+
+.clove-property-control {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+
+    > input:last-child {
+        min-width: 0;
+    }
+}
+
+.clove-color-input {
+    flex: 0 0 28px;
+    width: 28px !important;
+    padding: 3px !important;
+}
+
+.clove-properties-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    .clove-property {
+        grid-template-columns: 75px minmax(0, 1fr);
+    }
+}
+
+.clove-text-tools {
+    display: grid;
+    gap: 7px;
+    padding: 8px;
+    background: #fff;
+
+    > label,
+    .clove-text-number-row label {
+        display: grid;
+        grid-template-columns: 82px minmax(0, 1fr);
+        align-items: center;
+
+        > span:first-child {
+            color: #59646d;
+        }
+    }
+
+    select,
+    input[type='number'] {
+        width: 100%;
+        min-width: 0;
+        height: 27px;
+        padding: 0 5px;
+        background: #fff;
+        border: 1px solid #b8c0c6;
+        border-radius: 2px;
+    }
+
+    > small {
+        color: #7a848c;
+        line-height: 1.35;
+    }
+}
+
+.clove-simulation-tools {
+    display: grid;
+    gap: 6px;
+    padding: 8px;
+    background: #fffdf5;
+    border-left: 3px solid #d7a827;
+
+    label {
+        display: grid;
+        grid-template-columns: 82px minmax(0, 1fr);
+        align-items: center;
+
+        span {
+            color: #59646d;
+        }
+    }
+
+    input,
+    select {
+        width: 100%;
+        min-width: 0;
+        height: 27px;
+        padding: 0 5px;
+        background: #fff;
+        border: 1px solid #b8c0c6;
+        border-radius: 2px;
+    }
+
+    small {
+        color: #7a6b42;
+        line-height: 1.35;
+    }
+}
+
+.clove-text-color {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    input {
+        width: 38px;
+        height: 25px;
+        padding: 2px;
+        border: 1px solid #b8c0c6;
+    }
+
+    code {
+        color: #646f77;
+        font-size: 10px;
+    }
+}
+
+.clove-text-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 9px;
+
+    label {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        color: #59646d;
+        font-size: 10px;
+        text-transform: capitalize;
+    }
+
+    input {
+        accent-color: $accent;
+    }
+}
+
+.clove-text-number-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+
+    label {
+        grid-template-columns: 48px 1fr;
+    }
+}
+
+.clove-variables {
+    > label {
+        display: grid;
+        min-height: 28px;
+        grid-template-columns: 1fr 1fr 54px;
+        align-items: center;
+        gap: 5px;
+        padding: 2px 7px;
+        border-bottom: 1px solid #edf0f2;
+
+        span,
+        input {
+            min-width: 0;
+        }
+
+        input {
+            width: 100%;
+            height: 23px;
+            padding: 0 4px;
+            border: 1px solid transparent;
+
+            &:focus {
+                border-color: $accent;
+                outline: 0;
+            }
+        }
+
+        small {
+            color: #89939a;
+            font-size: 8px;
+            text-align: right;
+        }
+    }
+}
+
+.clove-empty-state {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.clove-dialog-backdrop {
+    position: fixed;
+    z-index: 5000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(23, 27, 31, .45);
+}
+
+.clove-update-dialog-shell {
+    width: min(470px, calc(100vw - 32px));
+    height: 255px;
+}
+
+.clove-update-dialog {
+    width: 100%;
+    height: 100%;
+
+    > .clove-ubuntu-window-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px;
+        background: #ecebe4;
+    }
+
+    .clove-update-dialog-message {
+        display: grid;
+        grid-template-columns: 25px minmax(0, 1fr);
+        align-items: start;
+        gap: 10px;
+
+        > img {
+            width: 25px;
+            height: 25px;
+            image-rendering: pixelated;
+        }
+
+        > div { min-width: 0; }
+
+        p {
+            margin: 6px 0 0;
+            color: #4f4d47;
+            font-size: 12px;
+            line-height: 1.45;
+            user-select: text;
+        }
+
+        .clove-update-dialog-detail {
+            display: block;
+            margin-top: 6px;
+        }
+    }
+
+    .clove-update-progress {
+        position: relative;
+        height: 24px;
+        overflow: hidden;
+        background: #d3d1c8;
+        border: 1px solid #7b7973;
+        box-shadow: inset 1px 1px #aaa79e, inset -1px -1px #fff;
+
+        > span {
+            position: absolute;
+            inset: 2px auto 2px 2px;
+            min-width: 2px;
+            background: repeating-linear-gradient(90deg, #418db0 0 8px, #55a3c7 8px 12px);
+        }
+
+        > canvas {
+            position: absolute;
+            z-index: 1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 7px;
+        margin-top: auto;
+
+        .clove-habbo-button { height: 28px; }
+    }
+}
+
+@media (max-width: 1180px) {
+    .clove-update-indicator {
+        width: 29px;
+        padding-right: 2px;
+
+        > canvas { display: none; }
+    }
+}
+
+.clove-dialog {
+    display: grid;
+    width: 380px;
+    gap: 10px;
+    padding: 0 14px 14px;
+    background: #f6f7f8;
+    border: 1px solid #626b72;
+    border-radius: 5px;
+    box-shadow: 0 18px 60px rgba(0,0,0,.35);
+
+    header {
+        display: flex;
+        height: 38px;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 -14px;
+        padding: 0 12px;
+        color: #fff;
+        background: #30373d;
+        border-radius: 4px 4px 0 0;
+
+        button {
+            color: #fff;
+            background: transparent;
+            border: 0;
+            font-size: 20px;
+        }
+    }
+
+    p {
+        margin: 2px 0;
+        color: $muted;
+        line-height: 1.45;
+    }
+
+    > label,
+    > div label {
+        display: grid;
+        gap: 4px;
+        color: #58636b;
+        font-weight: 600;
+    }
+
+    > div {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    input,
+    select {
+        height: 30px;
+        padding: 0 7px;
+        background: #fff;
+        border: 1px solid #aeb7be;
+        border-radius: 3px;
+    }
+
+    footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 7px;
+        padding-top: 5px;
+
+        button {
+            height: 29px;
+            padding: 0 12px;
+            background: #fff;
+            border: 1px solid #aeb5bb;
+            border-radius: 3px;
+
+            &.primary {
+                color: #fff;
+                background: $accent;
+                border-color: $accent-dark;
+            }
+        }
+    }
+}
+
+.clove-help-dialog {
+    width: 520px;
+
+    ol {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 3px 0 3px 28px;
+    }
+
+    li {
+        padding-left: 4px;
+
+        strong,
+        span {
+            display: block;
+        }
+
+        strong {
+            margin-bottom: 2px;
+            color: #343d44;
+        }
+
+        span {
+            color: $muted;
+            line-height: 1.4;
+        }
+    }
+}
+
+.clove-warning {
+    position: fixed;
+    z-index: 900;
+    right: 12px;
+    bottom: 12px;
+    max-width: 520px;
+    padding: 6px 10px;
+    color: #5f4800;
+    background: #fff3c4;
+    border-bottom: 1px solid #d7bd58;
+    font-size: 10px;
+}
+
+.clove-library-header {
+    display: flex;
+    min-height: 28px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    background: linear-gradient(#fff, #e4e8eb);
+    border-top: 1px solid #aeb5bb;
+    border-bottom: 1px solid #aeb5bb;
+
+    strong {
+        font-size: 10px;
+        letter-spacing: .35px;
+        text-transform: uppercase;
+    }
+
+    span {
+        color: $muted;
+        font-size: 9px;
+    }
+}
+
+.clove-library-filters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    button {
+        height: 27px;
+        background: #f5f7f8;
+        border: 0;
+        border-right: 1px solid #c8ced3;
+        border-bottom: 1px solid #c8ced3;
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+
+        &.active {
+            color: $accent-dark;
+            background: #fff;
+            box-shadow: inset 0 -2px $accent;
+        }
+    }
+}
+
+.clove-library-refiners {
+    padding: 3px 6px 5px;
+    background: #eef1f3;
+    border-bottom: 1px solid $soft-line;
+
+    label {
+        display: grid;
+        grid-template-columns: 50px 1fr;
+        align-items: center;
+        color: #56616a;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    select {
+        height: 25px;
+        border: 1px solid #b8c0c6;
+        border-radius: 3px;
+    }
+
+    .clove-habbo-select {
+        height: 23px;
+    }
+}
+
+.clove-unified-library {
+    min-height: 150px;
+    flex: 1 1 60%;
+    overflow: auto;
+    background: #dfe3e6;
+}
+
+.clove-library-section {
+    display: block;
+    padding: 0 0 3px;
+
+    > h3 {
+        position: sticky;
+        z-index: 5;
+        top: 0;
+        margin: 0;
+        padding: 5px 7px;
+        color: #59646c;
+        background: #e9edef;
+        border-top: 1px solid #fff;
+        border-bottom: 1px solid #c3c9ce;
+        font-size: 9px;
+        letter-spacing: .3px;
+        text-transform: uppercase;
+    }
+}
+
+.clove-widget-card > span:last-child > em {
+    margin-top: 3px;
+    color: #899198;
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.clove-library-section.clove-raw-skins,
+.clove-library-section.clove-asset-library {
+    min-height: 0;
+    overflow: visible;
+
+    > h3 {
+        grid-column: 1 / -1;
+        margin: -4px -4px 1px;
+    }
+}
+
+.clove-raw-skins > button,
+.clove-asset-library > button,
+.clove-project-asset-open {
+    min-width: 0;
+    padding: 3px;
+    background: #fff;
+    border: 1px solid #c5cbd0;
+    cursor: grab;
+
+    &:hover {
+        border-color: $accent;
+    }
+
+    &:active {
+        cursor: grabbing;
+    }
+}
+
+.clove-raw-skins > button > *,
+.clove-asset-library > button:not(.clove-asset-load-more) > *,
+.clove-project-asset-open > * {
+    pointer-events: none;
+    user-select: none;
+}
+
+.clove-raw-skins img,
+.clove-asset-library img {
+    -webkit-user-drag: none;
+}
+
+.clove-raw-skins > button {
+    display: grid;
+    height: 67px;
+    grid-template-rows: 43px 1fr;
+
+    > span {
+        position: relative;
+        display: block;
+        width: 60px;
+        height: 38px;
+        place-self: center;
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    small {
+        overflow: hidden;
+        color: #5d6770;
+        font-size: 8px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    em {
+        display: block;
+        overflow: hidden;
+        margin-top: 1px;
+        color: #8a939a;
+        font-size: 7px;
+        font-style: normal;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.clove-asset-library > button.clove-asset-load-more {
+    display: grid;
+    min-height: 62px;
+    grid-column: 1 / -1;
+    place-content: center;
+    color: $accent-dark;
+    background: #f7fbfd;
+    border: 1px dashed #8db7c9;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 700;
+
+    small {
+        color: #728089;
+        font-weight: 400;
+    }
+}
+
+.clove-asset-library > button {
+    img {
+        display: block;
+        width: 100%;
+        height: 56px;
+        object-fit: contain;
+        image-rendering: pixelated;
+        background: #edf0f2;
+    }
+
+    small {
+        display: block;
+        overflow: hidden;
+        margin-top: 3px;
+        color: #5d6770;
+        font-size: 8px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.clove-marquee {
+    position: fixed;
+    z-index: 10000;
+    background: rgba(211, 16, 84, .12);
+    border: 1px solid #d31054;
+    pointer-events: none;
+}
+
+.clove-snap-guide {
+    position: absolute;
+    z-index: 20000;
+    display: block;
+    background: #00d7ff;
+    box-shadow: 0 0 0 1px rgba(0, 52, 70, .45);
+    pointer-events: none;
+
+    &.vertical {
+        top: -2000px;
+        bottom: -2000px;
+        width: 1px;
+    }
+
+    &.horizontal {
+        right: -2000px;
+        left: -2000px;
+        height: 1px;
+    }
+}
+
+.clove-static-bitmap {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+.clove-sim-input {
+    position: absolute;
+    z-index: 5;
+    inset: 1px 3px;
+    pointer-events: auto;
+
+    .truffle-editable-render {
+        transform: none;
+    }
+}
+
+.clove-node.is-sim-disabled {
+    cursor: not-allowed;
+
+    .clove-sim-input {
+        opacity: .58;
+        pointer-events: none;
+    }
+}
+
+.clove-sim-dropmenu {
+    position: absolute;
+    z-index: 20;
+    inset: 1px 3px;
+    pointer-events: auto;
+
+    > button {
+        display: grid;
+        width: 100%;
+        height: 19px;
+        grid-template-columns: minmax(0, 1fr) 15px;
+        align-items: center;
+        padding: 0 1px 0 5px;
+        overflow: hidden;
+        color: #222;
+        text-align: left;
+        background: transparent;
+        border: 0;
+        font: 10px Ubuntu;
+
+        span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        i::after {
+            content: '▾';
+            display: block;
+            text-align: center;
+            font-style: normal;
+        }
+    }
+
+    > div {
+        position: absolute;
+        z-index: 100;
+        top: 20px;
+        right: 0;
+        left: 0;
+        padding: 2px;
+        background: #fff;
+        border: 1px solid #4c555c;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, .28);
+
+        button {
+            display: block;
+            width: 100%;
+            height: 20px;
+            padding: 0 5px;
+            color: #222;
+            text-align: left;
+            background: #fff;
+            border: 0;
+            font: 10px Ubuntu;
+
+            &:hover,
+            &[aria-selected='true'] {
+                color: #fff;
+                background: #287ca7;
+            }
+        }
+    }
+}
+
+// Keep Habbo chrome authoritative over legacy editor layout rules.
+.clove-library-filters {
+    display: flex;
+    grid-template-columns: none;
+    gap: 3px;
+    padding: 3px 5px;
+    background: #ecebe4;
+
+    .clove-habbo-button {
+        height: 28px;
+        flex: 1 1 0;
+        padding: 0 12px;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        text-transform: none;
+    }
+}
+
+.clove-tree .clove-tree-visibility {
+    display: inline-flex;
+    width: 19px;
+    height: 20px;
+    place-self: center;
+    padding: 0;
+}
+
+.clove-tree .clove-tree-type {
+    color: #5d5a53;
+    font: inherit;
+}
+
+.clove-dialog {
+    display: block;
+    width: 100%;
+    height: 100%;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+
+    > .clove-ubuntu-window-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 12px;
+        background: #ecebe4;
+    }
+
+    > .clove-ubuntu-window-content > div {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    footer .clove-habbo-button {
+        height: 28px;
+        padding: 0 14px;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+    }
+
+    > .clove-ubuntu-window-title {
+        display: grid;
+        height: 32px;
+        margin: 0;
+        padding: 0;
+        color: #fff;
+        background: transparent;
+        border-radius: 0;
+    }
+}
+
+.clove-inspector-heading {
+    background: #d8d5cc;
+    border-top: 1px solid #f7f5ee;
+    border-bottom: 1px solid #aaa79d;
+}
+
+.clove-widget-card > span:last-child {
+    align-items: flex-start;
+
+    > canvas {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        flex: 0 0 auto;
+    }
+}
+
+// Keep the editor on the same Habbo/Volter control language as the client.
+.clove-toolbar-window {
+    > .clove-ubuntu-window-title {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding-left: 3px;
+
+        .clove-ubuntu-window-meta {
+            position: absolute;
+            right: auto;
+            left: 48px;
+        }
+    }
+
+    &.has-alignment-tools {
+        min-height: 139px;
+        flex-basis: 139px;
+    }
+}
+
+.clove-ubuntu-window-meta {
+    top: 10px;
+    right: 7px;
+    flex: 0 0 auto;
+    image-rendering: pixelated;
+}
+
+.clove-toolbar .clove-alignbar {
+    width: 100%;
+    height: 31px;
+    flex: 0 0 100%;
+    order: 20;
+    padding: 2px 0 0;
+    background: transparent;
+    border: 0;
+
+    .clove-habbo-button {
+        height: 28px;
+        padding: 0 12px;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+    }
+}
+
+.clove-habbo-select {
+    display: block;
+    height: 21px;
+    overflow: visible;
+
+    > .habbo-skin-view {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+
+    .clove-habbo-select-label {
+        position: absolute;
+        z-index: 1;
+        top: 2px;
+        right: 22px;
+        left: 5px;
+        height: 17px;
+        padding: 0;
+        overflow: hidden;
+
+        canvas {
+            display: block;
+            max-width: none;
+            image-rendering: pixelated;
+        }
+    }
+
+    .clove-habbo-select-toggle {
+        position: absolute;
+        z-index: 2;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        cursor: pointer;
+        background: transparent;
+        border: 0;
+    }
+}
+
+.clove-habbo-select-menu {
+    position: fixed;
+    z-index: 10000;
+    display: block;
+    box-sizing: border-box;
+    padding: 2px;
+    overflow-y: auto;
+    scrollbar-width: auto;
+
+    &::-webkit-scrollbar { display: block; }
+
+    > .habbo-skin-view {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+    }
+}
+
+.clove-habbo-select-options {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+
+    button {
+        position: relative;
+        display: flex;
+        width: 100%;
+        min-height: 15px;
+        flex: 0 0 15px;
+        align-items: flex-start;
+        padding: 1px 4px 2px;
+        overflow: hidden;
+        text-align: left;
+        background: transparent;
+        border: 0;
+
+        > .habbo-skin-view {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+
+        > canvas:last-child {
+            position: relative;
+            z-index: 1;
+            display: block;
+            max-width: none;
+            flex: 0 0 auto;
+            image-rendering: pixelated;
+        }
+
+        &:disabled { opacity: .48; }
+    }
+}
+
+.clove-habbo-input {
+    overflow: hidden;
+    background: #fff;
+
+    > input {
+        inset: 2px 5px;
+        width: calc(100% - 10px);
+        height: calc(100% - 4px);
+        padding: 0;
+        font-family: Volter, monospace;
+        font-size: 9px;
+        line-height: 13px;
+        background: transparent !important;
+        border: 0 !important;
+    }
+}
+
+.clove-dialog {
+    label,
+    > .clove-ubuntu-window-content > div { min-width: 0; }
+
+    .clove-habbo-input {
+        width: 100%;
+        max-width: 100%;
+        height: 23px;
+    }
+
+    .clove-habbo-input > input {
+        width: calc(100% - 10px);
+        height: calc(100% - 4px);
+        padding: 0;
+        background: transparent;
+        border: 0;
+    }
+}
+
+.clove-scroll-area {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden !important;
+}
+
+.clove-scroll-viewport {
+    position: absolute;
+    inset: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
+}
+
+.clove-scroll-area.has-overflow > .clove-scroll-viewport { right: 17px; }
+.clove-scroll-area.has-horizontal-overflow > .clove-scroll-viewport { bottom: 17px; }
+.clove-scroll-content { position: relative; min-width: 100%; min-height: 100%; }
+
+.clove-scrollbar {
+    position: absolute;
+    z-index: 20;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 17px;
+
+    button {
+        position: absolute;
+        left: 0;
+        width: 17px;
+        padding: 0;
+        background: transparent;
+        border: 0;
+    }
+
+    canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+
+    .clove-scroll-up { top: 0; height: 16px; }
+    .clove-scroll-down { bottom: 0; height: 16px; }
+    .clove-scroll-track { top: 16px; bottom: 16px; height: auto; }
+    .clove-scroll-thumb { z-index: 1; min-height: 12px; cursor: ns-resize; }
+}
+
+.clove-scroll-area.has-horizontal-overflow > .clove-scrollbar-vertical { bottom: 17px; }
+
+.clove-scrollbar-horizontal {
+    position: absolute;
+    z-index: 20;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 17px;
+
+    button {
+        position: absolute;
+        top: 0;
+        height: 17px;
+        padding: 0;
+        background: transparent;
+        border: 0;
+    }
+
+    canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+
+    .clove-scroll-left { left: 0; width: 16px; }
+    .clove-scroll-right { right: 0; width: 16px; }
+    .clove-scroll-track-horizontal { right: 16px; left: 16px; width: auto; }
+    .clove-scroll-thumb-horizontal { z-index: 1; min-width: 12px; cursor: ew-resize; }
+}
+
+.clove-scroll-area.has-overflow > .clove-scrollbar-horizontal { right: 17px; }
+
+.clove-tree {
+    > .clove-scroll-viewport > .clove-scroll-content > ul { padding-left: 2px; }
+
+    .clove-tree-row {
+        margin: 0 2px 1px 0;
+        overflow: hidden;
+        border-radius: 5px;
+
+        &.depth-1 { background: #ddd; }
+        &:hover { background: #e7e7e7; }
+        &.selected {
+            color: #111;
+            background: #bad8e6;
+            box-shadow: inset 0 0 0 1px #8eb7ca;
+        }
+    }
+
+    .clove-tree-select { overflow: hidden; }
+    .clove-tree-name,
+    .clove-tree-type {
+        max-width: none;
+        flex: 0 0 auto;
+        image-rendering: pixelated;
+    }
+
+    .selected .clove-tree-type { color: #41545d; }
+}
+
+.clove-node-children { z-index: 4; }
+
+.clove-inspector-scroll { height: 100%; }
+
+.clove-inspector-summary {
+    margin: 5px 7px;
+    padding: 6px 7px;
+    background: #e2e0d8;
+    border: 0;
+    border-radius: 6px;
+
+    > span { background: #418db0; }
+}
+
+.clove-inspector-heading {
+    height: 25px;
+    margin: 0 7px;
+    padding: 0;
+    color: #3f474c;
+    background: transparent;
+    border: 0;
+}
+
+.clove-inspector-separator {
+    height: 1px;
+    margin: 5px 7px 3px;
+    background: #c1beb5;
+    box-shadow: 0 1px #f8f6ef;
+}
+
+.clove-properties,
+.clove-text-tools,
+.clove-simulation-tools,
+.clove-variables,
+.clove-transform-tools {
+    background: transparent;
+    border: 0;
+}
+
+.clove-transform-tools {
+    display: grid;
+    gap: 4px;
+    padding: 3px 7px 5px;
+
+    > .clove-transform-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 42px 42px;
+        gap: 4px;
+
+        > .clove-habbo-button {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0 2px;
+
+            > span {
+                width: 100%;
+                height: 100%;
+                place-items: center;
+
+                canvas { margin: 0 auto; }
+            }
+        }
+    }
+
+    .clove-habbo-button { min-width: 0; }
+
+    > .clove-transform-reset {
+        width: 76px;
+        justify-self: center;
+    }
+}
+
+.clove-property {
+    min-height: 31px;
+    grid-template-columns: 94px minmax(0, 1fr);
+    gap: 7px;
+    padding: 4px 7px;
+    border: 0;
+
+    > canvas:first-child { justify-self: start; }
+}
+
+.clove-properties-grid {
+    grid-template-columns: 1fr;
+
+    .clove-property { grid-template-columns: 94px minmax(0, 1fr); }
+}
+
+.clove-property-boolean.clove-habbo-checkbox {
+    grid-template-columns: minmax(0, 1fr) 24px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.clove-text-tools,
+.clove-simulation-tools { padding-top: 3px; padding-bottom: 3px; }
+.clove-simulation-tools { border-left: 0; }
+
+.clove-variables > label {
+    margin: 0 7px;
+    padding-right: 0;
+    padding-left: 0;
+    border-bottom-color: #d7d4cc;
+}
+
+// Final control geometry follows the classic Habbo client slices.
+.clove-toolbar-window > .clove-ubuntu-window-title {
+    .clove-ubuntu-window-meta {
+        top: 7px;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+.clove-toolbar .clove-habbo-select {
+    width: 64px;
+    min-width: 64px;
+
+    &::before {
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        right: 2px;
+        left: 2px;
+        height: 1px;
+        background: #111;
+        content: '';
+        pointer-events: none;
+    }
+}
+
+.clove-habbo-select-toggle:hover,
+.clove-habbo-select-toggle:focus,
+.clove-toolbar .clove-habbo-select-toggle:hover,
+.clove-toolbar .clove-habbo-select-toggle:focus {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: 0;
+}
+
+.clove-habbo-input-text {
+    position: absolute;
+    z-index: 1;
+    top: 4px;
+    right: 5px;
+    left: 5px;
+    height: 15px;
+    overflow: hidden;
+    pointer-events: none;
+
+    canvas {
+        display: block;
+        width: auto !important;
+        height: auto !important;
+        max-width: none;
+        image-rendering: pixelated;
+    }
+}
+
+.clove-habbo-input > input {
+    z-index: 2;
+    color: transparent !important;
+    caret-color: transparent;
+    opacity: .001;
+    -webkit-text-fill-color: transparent;
+
+    &::selection {
+        color: transparent;
+        background: transparent;
+        -webkit-text-fill-color: transparent;
+    }
+}
+
+.clove-property > .clove-property-control {
+    align-self: center;
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+    border: 0;
+}
+
+.clove-scrollbar {
+    z-index: 50;
+
+    button,
+    button:hover,
+    button:focus,
+    button:active {
+        display: block;
+        padding: 0;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        outline: 0;
+    }
+
+    .clove-scroll-track { top: 16px; bottom: 16px; height: auto; }
+    .clove-scroll-thumb { z-index: 1; min-height: 12px; }
+}
+
+// Shared editor-control corrections. Keep these after the legacy polish layers.
+.clove-node {
+    isolation: isolate;
+}
+
+.clove-habbo-select {
+    height: 21px;
+    min-height: 21px;
+
+    > .habbo-skin-view { overflow: visible; }
+}
+
+.clove-library-refiners .clove-habbo-select {
+    height: 21px;
+    width: min(190px, 100%);
+    justify-self: start;
+}
+
+.clove-library-refiners label {
+    grid-template-columns: 58px minmax(0, 1fr);
+    column-gap: 7px;
+}
+
+.clove-habbo-checkbox {
+    min-height: 20px;
+    overflow: visible;
+}
+
+.clove-habbo-checkbox-box {
+    width: 19px;
+    min-width: 19px;
+    height: 20px;
+    overflow: visible;
+
+    > .habbo-skin-view {
+        width: 19px;
+        min-width: 19px;
+        height: 20px;
+        max-width: none;
+        max-height: none;
+    }
+}
+
+.clove-habbo-input {
+    background: transparent;
+
+    &.is-focused {
+        .clove-habbo-input-text {
+            display: flex;
+            align-items: flex-start;
+            visibility: visible;
+
+            &::after {
+                position: relative;
+                top: 2px;
+                left: -2px;
+                display: inline-block;
+                width: 1px;
+                height: 11px;
+                margin-left: 1px;
+                background: #000;
+                content: '';
+                animation: clove-input-caret 1s steps(1, end) infinite;
+                vertical-align: top;
+            }
+        }
+
+        > input {
+            z-index: 3;
+            color: transparent !important;
+            caret-color: transparent;
+            opacity: .001;
+            -webkit-text-fill-color: transparent;
+            box-shadow: none !important;
+
+            &::selection {
+                color: transparent;
+                background: transparent;
+                -webkit-text-fill-color: transparent;
+            }
+        }
+    }
+}
+
+.clove-habbo-select .clove-habbo-select-toggle {
+    z-index: 0 !important;
+}
+
+.clove-scroll-area.has-overflow > .clove-scroll-viewport { right: 17px; }
+.clove-scroll-viewport { overflow: auto; scrollbar-width: none; }
+.clove-scroll-viewport::-webkit-scrollbar { display: none; }
+
+@keyframes clove-input-caret {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+.clove-tree {
+    ul,
+    > .clove-scroll-viewport > .clove-scroll-content > ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .clove-tree-row {
+        position: relative;
+        display: grid;
+        width: 100%;
+        min-width: 190px;
+        height: 25px;
+        grid-template-columns: 17px 22px minmax(0, 1fr);
+        align-items: center;
+        margin: 0;
+        overflow: visible;
+        background: transparent;
+        border-radius: 0;
+        box-shadow: none;
+        transition: background-color .12s ease, box-shadow .12s ease;
+
+        &.is-alt { background: #ddd; }
+        &:hover { background: #e7e7e7; }
+        &.selected {
+            color: #111;
+            background: #bad8e6;
+            box-shadow: inset 0 0 0 1px #8eb7ca;
+        }
+
+        &.is-hidden { opacity: .62; }
+        &.is-inherited-hidden { opacity: .38; }
+
+        &.drop-before {
+            &::before {
+                position: absolute;
+                z-index: 4;
+                top: -1px;
+                right: 3px;
+                left: 3px;
+                height: 2px;
+                background: #418db0;
+                border-radius: 2px;
+                content: '';
+            }
+        }
+
+        &.drop-after {
+            &::after {
+                position: absolute;
+                z-index: 4;
+                right: 3px;
+                bottom: -1px;
+                left: 3px;
+                height: 2px;
+                background: #418db0;
+                border-radius: 2px;
+                content: '';
+            }
+        }
+
+        &.drop-inside {
+            background: #c9e5f1;
+            box-shadow: inset 0 0 0 2px #418db0;
+        }
+    }
+
+    .clove-tree-chevron,
+    .clove-tree-chevron-spacer {
+        display: grid;
+        width: 17px;
+        height: 25px;
+        grid-template-columns: none;
+        place-items: center;
+        padding: 0;
+        background: transparent !important;
+        border: 0;
+        box-shadow: none;
+    }
+
+    .clove-tree-chevron {
+        cursor: pointer;
+
+        span {
+            display: block;
+            width: 6px;
+            height: 6px;
+            border-right: 1px solid #4a5258;
+            border-bottom: 1px solid #4a5258;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+
+        &.is-collapsed span { transform: rotate(-45deg) translate(-1px, 1px); }
+    }
+
+    .clove-tree-visibility {
+        display: inline-flex;
+        width: 19px;
+        height: 20px;
+        place-self: center;
+        overflow: visible;
+        padding: 0;
+        opacity: 1;
+    }
+
+    .clove-tree-select {
+        display: flex;
+        width: 100%;
+        height: 25px;
+        min-width: 0;
+        grid-template-columns: none;
+        align-items: center;
+        gap: 5px;
+        padding: 0 5px 0 2px;
+        overflow: hidden;
+        color: inherit;
+        background: transparent !important;
+        border: 0;
+        box-shadow: none;
+    }
+
+    .clove-tree-root-drop {
+        display: grid;
+        height: 24px;
+        margin: 3px 4px 5px;
+        place-items: center;
+        color: #69747c;
+        background: rgba(255, 255, 255, .42);
+        border: 1px dashed #aaa79d;
+        border-radius: 3px;
+        transition: height .12s ease, color .12s ease, background-color .12s ease, border-color .12s ease;
+
+        &.active {
+            height: 32px;
+            color: #1f566d;
+            background: #c9e5f1;
+            border-color: #418db0;
+        }
+    }
+}
+
+.clove-mode-switch {
+    gap: 4px;
+
+    button:last-child { margin-left: 0; }
+}
+
+// Final overrides: these intentionally follow the legacy compatibility rules
+// above so native browser visuals cannot win the cascade.
+.clove-stage-scroll-area {
+    width: 100%;
+    height: 100%;
+}
+
+.clove-stage-scroller {
+    display: grid;
+    width: max-content;
+    min-width: 100%;
+    min-height: 100%;
+    padding: 64px;
+    overflow: visible;
+    place-items: start;
+    background: transparent;
+}
+
+.clove-asset-library > button:not(.clove-asset-load-more) {
+    display: grid;
+    min-height: 126px;
+    grid-template-rows: 98px auto auto;
+    align-items: center;
+}
+
+.clove-project-asset-card {
+    position: relative;
+    min-width: 0;
+
+    > .clove-project-asset-open {
+        display: grid;
+        width: 100%;
+        min-height: 126px;
+        grid-template-rows: 98px auto auto;
+        align-items: center;
+    }
+
+    > .clove-project-asset-delete {
+        position: absolute;
+        z-index: 3;
+        top: 5px;
+        right: 5px;
+        width: 19px;
+        height: 19px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    &:hover > .clove-project-asset-delete,
+    &:focus-within > .clove-project-asset-delete {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+.clove-asset-library > button:not(.clove-asset-load-more) > .clove-asset-thumbnail,
+.clove-project-asset-open > .clove-asset-thumbnail {
+    display: flex;
+    width: 100%;
+    height: 96px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.clove-asset-library > button:not(.clove-asset-load-more) > .clove-asset-thumbnail > img,
+.clove-project-asset-open > .clove-asset-thumbnail > img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 96px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    background: transparent;
+}
+
+.clove-habbo-input > input,
+.truffle-editable > input,
+.truffle-editable > textarea {
+    color: transparent !important;
+    caret-color: transparent !important;
+    opacity: 0 !important;
+    -webkit-text-fill-color: transparent !important;
+
+    &::selection {
+        color: transparent !important;
+        background: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+    }
+}
+
+.clove-sim-dropmenu > button {
+    font: inherit;
+
+    > span canvas { display: block; image-rendering: pixelated; }
+
+    i::after {
+        display: block;
+        width: 0;
+        height: 0;
+        margin: 2px auto 0;
+        content: '';
+        border-top: 5px solid #222;
+        border-right: 4px solid transparent;
+        border-left: 4px solid transparent;
+    }
+}
+
+.clove-sim-dropmenu > div button {
+    display: flex;
+    align-items: center;
+    font: inherit;
+
+    canvas { display: block; image-rendering: pixelated; }
+}
+
+.clove-habbo-input.is-focused .clove-habbo-input-text::after {
+    display: none;
+}

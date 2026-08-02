@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self';" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Preparing Clove</title>
+    <link rel="stylesheet" href="./bootstrap.css" />
+</head>
+<body>
+    <main class="clove-bootstrap">
+        <div class="clove-loader-visual" aria-hidden="true">
+            <div class="clove-loader-pot-pulse"><img class="clove-loader-pot" src="./startup-pot.gif" width="200" height="200" alt="" /></div>
+            <strong class="clove-loader-brand">Clove</strong>
+        </div>
+        <section class="clove-bootstrap-copy" role="status" aria-live="polite">
+            <p id="message">Checking asset library...</p>
+            <p id="detail" class="detail">Clove is getting ready for first use.</p>
+        </section>
+        <div id="actions" class="actions" hidden>
+            <button id="retry" type="button" class="primary">Try again</button>
+            <button id="quit" type="button">Quit</button>
+        </div>
+    </main>
+    <script src="./loader-animation.js"></script>
+    <script src="./bootstrap.js"></script>
+</body>
+</html>

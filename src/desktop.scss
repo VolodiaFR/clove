@@ -1,0 +1,134 @@
+@font-face { font-family: CloveStartupUbuntu; src: url('/bootstrap-Ubuntu-B.ttf') format('truetype'); font-weight: 700; }
+
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: #e8ebed;
+}
+
+body {
+    min-width: 980px;
+    min-height: 640px;
+}
+
+.clove-startup {
+    position: fixed;
+    z-index: 100000;
+    display: grid;
+    inset: 0;
+    background: radial-gradient(circle at 50% 46%, #ffffff 0, #f2f4f5 28%, #e8ebed 62%, #dce1e4 100%);
+    opacity: 1;
+    place-items: center;
+    transition: opacity 380ms ease, visibility 0s linear 380ms;
+    user-select: none;
+
+    &.is-ready {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+.clove-loader-visual {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: 220px;
+    align-items: center;
+    flex-direction: column;
+    transform: translateY(-12px);
+}
+
+.clove-loader-coins {
+    position: fixed;
+    z-index: 1;
+    overflow: hidden;
+    inset: 0;
+    pointer-events: none;
+}
+
+.clove-loader-coin {
+    position: fixed;
+    display: block;
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(0 2px 2px rgba(77, 56, 0, .22));
+    image-rendering: pixelated;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+.clove-loader-pot-pulse {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    transform-origin: center bottom;
+
+    &::after {
+        position: absolute;
+        z-index: -1;
+        width: 132px;
+        height: 24px;
+        right: 34px;
+        bottom: 9px;
+        border-radius: 50%;
+        background: rgba(123, 102, 47, .13);
+        content: '';
+        filter: blur(8px);
+        opacity: .5;
+        transform: scale(.9);
+    }
+
+    &.coin-impact {
+        animation: clove-pot-impact 460ms cubic-bezier(.25, .8, .25, 1);
+
+        &::after { animation: clove-loader-shadow-impact 460ms ease-out; }
+
+        .clove-loader-pot { animation: clove-pot-impact-glow 460ms ease-out; }
+    }
+}
+
+.clove-loader-pot {
+    display: block;
+    width: 200px;
+    height: 200px;
+    filter: drop-shadow(0 8px 7px rgba(43, 49, 53, .16));
+    image-rendering: pixelated;
+    animation: clove-pot-arrive 350ms ease-out both;
+}
+
+.clove-loader-brand {
+    margin-top: 7px;
+    color: #16884a;
+    font: 700 30px/1 CloveStartupUbuntu, Ubuntu, sans-serif;
+    letter-spacing: -.8px;
+    text-shadow: 0 1px 0 #fff;
+}
+
+@keyframes clove-pot-impact {
+    0%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-8px); }
+    54% { transform: translateY(-12px); }
+    74% { transform: translateY(0); }
+    86% { transform: translateY(-4px); }
+}
+
+@keyframes clove-loader-shadow-impact {
+    0%, 100% { opacity: .5; transform: scale(.9); }
+    45% { opacity: .22; transform: scale(.68); }
+    82% { opacity: .7; transform: scale(1.02); }
+}
+
+@keyframes clove-pot-arrive {
+    from { opacity: .25; }
+    to { opacity: 1; }
+}
+
+@keyframes clove-pot-impact-glow {
+    0%, 100% { filter: drop-shadow(0 8px 7px rgba(43, 49, 53, .16)) brightness(1); }
+    48% { filter: drop-shadow(0 11px 12px rgba(185, 142, 19, .34)) brightness(1.12); }
+}

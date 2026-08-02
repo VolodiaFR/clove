@@ -1,0 +1,122 @@
+{
+  "name": "clove",
+  "version": "1.0.0",
+  "description": "An open-source desktop editor for building Habbo UI layouts for Nitro clients.",
+  "author": "iSetht and Clove contributors",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iSetht/Clove.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iSetht/Clove/issues"
+  },
+  "homepage": "https://github.com/iSetht/Clove#readme",
+  "type": "module",
+  "packageManager": "yarn@4.14.1",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "start": "electron .",
+    "truffle:setup": "truffle-setup --out public/assets/truffle",
+    "assets:bundle": "node scripts/bundle-assets.mjs",
+    "assets": "yarn truffle:setup && yarn assets:bundle",
+    "test": "node --test electron/content-store.test.cjs",
+    "typecheck": "tsc --noEmit",
+    "build:renderer": "vite build",
+    "build": "node scripts/build-app.mjs",
+    "build:win": "node scripts/build-app.mjs",
+    "build:mac": "node scripts/build-app.mjs --mac",
+    "build:mac:unsigned": "node scripts/build-app.mjs --mac --unsigned"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.0.3",
+    "electron": "^43.1.1",
+    "electron-builder": "^26.15.3",
+    "html-to-image": "1.11.13",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sass": "^1.89.2",
+    "truffle-text": "2.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.1.5"
+  },
+  "build": {
+    "appId": "com.clove.editor",
+    "productName": "Clove",
+    "asar": true,
+    "compression": "normal",
+    "directories": {
+      "output": "release",
+      "buildResources": "build-resources"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "${env.CLOVE_UPDATE_URL}",
+        "channel": "latest",
+        "useMultipleRangeRequest": false
+      }
+    ],
+    "win": {
+      "icon": "build-resources/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Clove-Setup-${version}-Windows-${arch}.${ext}"
+    },
+    "mac": {
+      "icon": "build-resources/icon.png",
+      "category": "public.app-category.developer-tools",
+      "hardenedRuntime": true,
+      "notarize": true,
+      "forceCodeSigning": true,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "artifactName": "Clove-${version}-macOS-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "Clove ${version}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "script": "build-resources/installer.nsi",
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Clove",
+      "uninstallDisplayName": "Clove"
+    }
+  },
+  "dependencies": {
+    "electron-log": "^5.4.4",
+    "electron-updater": "^6.8.9",
+    "tar": "^7.5.22"
+  }
+}

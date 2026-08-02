@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#b83a64" />
+    <link rel="icon" type="image/png" href="./icon.png" />
+    <title>Clove</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <main id="clove-startup" class="clove-startup" role="status" aria-label="Loading Clove">
+      <div class="clove-loader-visual" aria-hidden="true">
+        <div class="clove-loader-pot-pulse"><img class="clove-loader-pot" src="./startup-pot.gif" width="200" height="200" alt="" /></div>
+        <strong class="clove-loader-brand">Clove</strong>
+      </div>
+    </main>
+    <script src="./loader-animation.js"></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

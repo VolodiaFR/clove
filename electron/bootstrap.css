@@ -1,0 +1,178 @@
+@font-face { font-family: Ubuntu; src: url('./bootstrap-Ubuntu-R.ttf') format('truetype'); font-weight: 400; }
+@font-face { font-family: Ubuntu; src: url('./bootstrap-Ubuntu-B.ttf') format('truetype'); font-weight: 700; }
+
+:root { color: #2b3439; font-family: Ubuntu, sans-serif; background: #e8ebed; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+    display: grid;
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 46%, #ffffff 0, #f2f4f5 28%, #e8ebed 62%, #dce1e4 100%);
+    place-items: center;
+    user-select: none;
+}
+
+.clove-bootstrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    min-width: 310px;
+    align-items: center;
+    flex-direction: column;
+    transform: translateY(-8px);
+}
+
+.clove-loader-visual {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: 220px;
+    align-items: center;
+    flex-direction: column;
+}
+
+.clove-loader-coins {
+    position: fixed;
+    z-index: 1;
+    overflow: hidden;
+    inset: 0;
+    pointer-events: none;
+}
+
+.clove-loader-coin {
+    position: fixed;
+    display: block;
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(0 2px 2px rgba(77, 56, 0, .22));
+    image-rendering: pixelated;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+.clove-loader-pot-pulse {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    transform-origin: center bottom;
+}
+
+.clove-loader-pot-pulse::after {
+    position: absolute;
+    z-index: -1;
+    width: 132px;
+    height: 24px;
+    right: 34px;
+    bottom: 9px;
+    border-radius: 50%;
+    background: rgba(123, 102, 47, .13);
+    content: '';
+    filter: blur(8px);
+    opacity: .5;
+    transform: scale(.9);
+}
+
+.clove-loader-pot-pulse.coin-impact {
+    animation: clove-pot-impact 460ms cubic-bezier(.25, .8, .25, 1);
+}
+
+.clove-loader-pot-pulse.coin-impact::after {
+    animation: clove-loader-shadow-impact 460ms ease-out;
+}
+
+.clove-loader-pot-pulse.coin-impact .clove-loader-pot {
+    animation: clove-pot-impact-glow 460ms ease-out;
+}
+
+.clove-loader-pot {
+    display: block;
+    width: 200px;
+    height: 200px;
+    filter: drop-shadow(0 8px 7px rgba(43, 49, 53, .16));
+    image-rendering: pixelated;
+    animation: clove-pot-arrive 350ms ease-out both;
+}
+
+.clove-loader-brand {
+    margin-top: 7px;
+    color: #16884a;
+    font: 700 30px/1 Ubuntu, sans-serif;
+    letter-spacing: -.8px;
+    text-shadow: 0 1px 0 #fff;
+}
+
+.clove-bootstrap-copy {
+    min-height: 48px;
+    margin-top: 17px;
+    text-align: center;
+}
+
+#message {
+    margin: 0;
+    color: #29353b;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -.1px;
+}
+
+.detail {
+    max-width: 460px;
+    margin: 6px 20px 0;
+    color: #68747a;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+button {
+    min-width: 94px;
+    height: 32px;
+    padding: 0 16px;
+    color: #29353b;
+    background: #f8f9f9;
+    border: 1px solid #aab4b9;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(35, 44, 49, .14);
+    font: 700 12px Ubuntu, sans-serif;
+    cursor: pointer;
+}
+
+button:hover { background: #fff; border-color: #7d8c93; }
+button:active { transform: translateY(1px); }
+button.primary { color: #fff; background: #b83a64; border-color: #8f294b; }
+button.primary:hover { background: #c6426f; }
+button:disabled { cursor: wait; opacity: .55; }
+
+@keyframes clove-pot-impact {
+    0%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-8px); }
+    54% { transform: translateY(-12px); }
+    74% { transform: translateY(0); }
+    86% { transform: translateY(-4px); }
+}
+
+@keyframes clove-loader-shadow-impact {
+    0%, 100% { opacity: .5; transform: scale(.9); }
+    45% { opacity: .22; transform: scale(.68); }
+    82% { opacity: .7; transform: scale(1.02); }
+}
+
+@keyframes clove-pot-arrive {
+    from { opacity: .25; }
+    to { opacity: 1; }
+}
+
+@keyframes clove-pot-impact-glow {
+    0%, 100% { filter: drop-shadow(0 8px 7px rgba(43, 49, 53, .16)) brightness(1); }
+    48% { filter: drop-shadow(0 11px 12px rgba(185, 142, 19, .34)) brightness(1.12); }
+}
