@@ -8,6 +8,12 @@ Download the latest Windows `.exe` or macOS `.dmg` from [GitHub Releases](https:
 
 The source archives are for developers and are not installers.
 
+## Showcase
+
+| Edit imported layouts | Build with library assets | Slice custom images |
+|:---:|:---:|:---:|
+| [![Editing a wired chest layout in Clove](Chest.png)](Chest.png) | [![Building a custom Dino Quest window in Clove](Dino.png)](Dino.png) | [![Slicing an imported image into reusable regions](Import.png)](Import.png) |
+
 ## Features
 
 - Import `.xml` and `.bin` Habbo window layouts.

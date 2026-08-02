@@ -51100,7 +51100,7 @@
   "wiredfurni.params.easing_function": "Easing function:",
   "wiredfurni.params.bounce_count": "Bounce count:",
   "wiredfurni.params.log_info": "INFO",
-  "wiredfurni.params.log_warn": "WARN", 
+  "wiredfurni.params.log_warn": "WARN",
   "wiredfurni.params.log_error": "ERROR",
   "wiredfurni.params.log_debug": "DEBUG"
 }
