@@ -42,6 +42,16 @@ const clampRect = (rect: CloveSkinRect, imageWidth: number, imageHeight: number)
     };
 };
 
+const clampFixedRect = (rect: CloveSkinRect, imageWidth: number, imageHeight: number): CloveSkinRect =>
+{
+    const width = Math.max(1, Math.min(imageWidth, Math.round(rect.width)));
+    const height = Math.max(1, Math.min(imageHeight, Math.round(rect.height)));
+    const x = Math.max(0, Math.min(imageWidth - width, Math.round(rect.x)));
+    const y = Math.max(0, Math.min(imageHeight - height, Math.round(rect.y)));
+
+    return { x, y, width, height };
+};
+
 const evenBoundaries = (size: number, parts: number) => parts > 1
     ? Array.from({ length: parts - 1 }, (_value, index) => Math.round(size * (index + 1) / parts))
     : [];
@@ -107,10 +117,24 @@ export const CustomSkinImportDialog: FC<CustomSkinImportDialogProps> = ({ file, 
             y: Math.max(0, Math.min(file.height - 1, Math.floor((event.clientY - bounds.top) * file.height / bounds.height)))
         };
     };
-    const updateActiveRect = (update: Partial<CloveSkinRect>) => setStates(current => ({
-        ...current,
-        [activeState]: clampRect({ ...(current[activeState] || current.default), ...update }, file.width, file.height)
-    }));
+    const updateActiveRect = (update: Partial<CloveSkinRect>) => setStates(current =>
+    {
+        const base = { ...(current[activeState] || current.default), ...update };
+
+        if(activeState !== 'default' && current.default)
+        {
+            return {
+                ...current,
+                [activeState]: clampFixedRect({
+                    ...base,
+                    width: current.default.width,
+                    height: current.default.height
+                }, file.width, file.height)
+            };
+        }
+
+        return { ...current, [activeState]: clampRect(base, file.width, file.height) };
+    });
     const beginSelection = (event: ReactPointerEvent<HTMLDivElement>) =>
     {
         if(event.button !== 0) return;
@@ -119,20 +143,53 @@ export const CustomSkinImportDialog: FC<CustomSkinImportDialogProps> = ({ file, 
 
         event.currentTarget.setPointerCapture(event.pointerId);
         setDragStart(point);
-        setStates(current => ({ ...current, [activeState]: { x: point.x, y: point.y, width: 1, height: 1 }}));
+        setStates(current =>
+        {
+            if(activeState !== 'default' && current.default)
+            {
+                return {
+                    ...current,
+                    [activeState]: clampFixedRect({
+                        x: point.x,
+                        y: point.y,
+                        width: current.default.width,
+                        height: current.default.height
+                    }, file.width, file.height)
+                };
+            }
+
+            return { ...current, [activeState]: { x: point.x, y: point.y, width: 1, height: 1 }};
+        });
     };
     const moveSelection = (event: ReactPointerEvent<HTMLDivElement>) =>
     {
         if(!dragStart || !event.currentTarget.hasPointerCapture(event.pointerId)) return;
 
         const point = pointFromEvent(event);
-        const x = Math.min(dragStart.x, point.x);
-        const y = Math.min(dragStart.y, point.y);
 
-        setStates(current => ({
-            ...current,
-            [activeState]: { x, y, width: Math.abs(point.x - dragStart.x) + 1, height: Math.abs(point.y - dragStart.y) + 1 }
-        }));
+        setStates(current =>
+        {
+            if(activeState !== 'default' && current.default)
+            {
+                return {
+                    ...current,
+                    [activeState]: clampFixedRect({
+                        x: Math.min(dragStart.x, Math.max(0, point.x - current.default.width + 1)),
+                        y: Math.min(dragStart.y, Math.max(0, point.y - current.default.height + 1)),
+                        width: current.default.width,
+                        height: current.default.height
+                    }, file.width, file.height)
+                };
+            }
+
+            const x = Math.min(dragStart.x, point.x);
+            const y = Math.min(dragStart.y, point.y);
+
+            return {
+                ...current,
+                [activeState]: { x, y, width: Math.abs(point.x - dragStart.x) + 1, height: Math.abs(point.y - dragStart.y) + 1 }
+            };
+        });
     };
     const finishSelection = (event: ReactPointerEvent<HTMLDivElement>) =>
     {
@@ -284,7 +341,8 @@ export const CustomSkinImportDialog: FC<CustomSkinImportDialogProps> = ({ file, 
                         { importMode === 'grid' && boundaries.y.map((position, index) => <button type="button" className="grid-divider horizontal" aria-label={ `Adjust horizontal divider ${ index + 1 }` } key={ `y-${ index }` } style={ { top: `${ position / file.height * 100 }%` } } onPointerDown={ beginBoundaryDrag('y', index) } />) }
                     </div>
                     { importMode === 'region' && <div className="clove-skin-rect-fields">
-                        { ([ 'x', 'y', 'width', 'height' ] as (keyof CloveSkinRect)[]).map(field => <label key={ field }><HabboText>{ field }</HabboText><HabboInput caretAtEnd type="text" inputMode="numeric" value={ activeRect?.[field] ?? '' } onChange={ changeRectField(field) } /></label>) }
+                        { ([ 'x', 'y', 'width', 'height' ] as (keyof CloveSkinRect)[]).map(field => <label key={ field }><HabboText>{ field }</HabboText><HabboInput caretAtEnd type="text" inputMode="numeric" value={ activeRect?.[field] ?? '' } disabled={ activeState !== 'default' && (field === 'width' || field === 'height') } onChange={ changeRectField(field) } /></label>) }
+                        { activeState !== 'default' && <HabboText className="clove-skin-aspect-hint">Size locked to Default to keep aspect ratio.</HabboText> }
                     </div> }
                 </div></HabboScrollArea>
                 { importMode === 'grid' ? <div className="clove-skin-preview-column is-grid">{ gridRects.map((rect, index) => <div className="clove-grid-region-preview" key={ index }><CropPreview file={ file } rect={ rect } maxWidth={ 82 } maxHeight={ 62 } /></div>) }</div> : <div className="clove-skin-preview-column"><HabboText>{ STATE_LABELS[activeState] }</HabboText><CropPreview file={ file } rect={ activeRect } /><HabboText>{ activeRect ? `${ activeRect.width } × ${ activeRect.height } px` : 'No region' }</HabboText></div> }

@@ -247,6 +247,7 @@ export const CloveNodeView: FC<CloveNodeViewProps> = props =>
         const startY = event.clientY;
 
         let latest = { x, y, width, height };
+        const lockAspect = !!resolvedSkin?.registryId.startsWith('project:');
         const geometryAt = (clientX: number, clientY: number, uniform: boolean) =>
         {
             const deltaX = snapValue((clientX - startX) / zoom, snap);
@@ -260,11 +261,13 @@ export const CloveNodeView: FC<CloveNodeViewProps> = props =>
             let nextWidth = width + (direction.includes('e') ? deltaX : direction.includes('w') ? -deltaX : 0);
             let nextHeight = height + (direction.includes('s') ? deltaY : direction.includes('n') ? -deltaY : 0);
 
-            if(uniform && direction.length === 2)
+            if(uniform)
             {
-                const widthScale = nextWidth / width;
-                const heightScale = nextHeight / height;
-                let scale = Math.abs(widthScale - 1) >= Math.abs(heightScale - 1) ? widthScale : heightScale;
+                const widthScale = direction.includes('e') || direction.includes('w') || direction.length === 2 ? nextWidth / width : 1;
+                const heightScale = direction.includes('n') || direction.includes('s') || direction.length === 2 ? nextHeight / height : 1;
+                let scale = direction.length === 2
+                    ? (Math.abs(widthScale - 1) >= Math.abs(heightScale - 1) ? widthScale : heightScale)
+                    : (direction.includes('e') || direction.includes('w') ? widthScale : heightScale);
                 const minimumScale = Math.max(minimumWidth / width, minimumHeight / height);
                 const maximumScale = Math.min(maximumWidth / width, maximumHeight / height);
 
@@ -286,21 +289,22 @@ export const CloveNodeView: FC<CloveNodeViewProps> = props =>
 
         const move = (moveEvent: PointerEvent) =>
         {
-            latest = geometryAt(moveEvent.clientX, moveEvent.clientY, moveEvent.shiftKey);
+            latest = geometryAt(moveEvent.clientX, moveEvent.clientY, lockAspect || moveEvent.shiftKey);
             const liveTarget = target.closest('.clove-stage')?.querySelector<HTMLElement>(`[data-node-id="${ CSS.escape(node.id) }"]`);
 
             if(!liveTarget) return;
-            if(direction.includes('e') || direction.includes('w')) liveTarget.style.width = `${ latest.width }px`;
-            if(direction.includes('n') || direction.includes('s')) liveTarget.style.height = `${ latest.height }px`;
+            liveTarget.style.width = `${ latest.width }px`;
+            liveTarget.style.height = `${ latest.height }px`;
             liveTarget.style.translate = `${ latest.x - x }px ${ latest.y - y }px`;
         };
         const end = () =>
         {
-            const attributes: Record<string, string> = {};
+            const attributes: Record<string, string> = {
+                width: String(latest.width),
+                height: String(latest.height)
+            };
 
-            if(direction.includes('e') || direction.includes('w')) attributes.width = String(latest.width);
             if(direction.includes('w')) attributes.x = String(latest.x);
-            if(direction.includes('n') || direction.includes('s')) attributes.height = String(latest.height);
             if(direction.includes('n')) attributes.y = String(latest.y);
 
             cleanup();

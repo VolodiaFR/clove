@@ -1,4 +1,5 @@
 import { HabboSkinState, RegistrySkin, SkinRegistryExtension } from '../common/habbo';
+import { CatalogSkin, CLOVE_THEMES, CloveTheme, WidgetDefinition } from './widgetCatalog';
 
 export interface CloveSkinRect
 {
@@ -20,6 +21,56 @@ export interface CloveCustomSkin
     imageHeight: number;
     states: { default: CloveSkinRect } & Partial<Record<HabboSkinState, CloveSkinRect>>;
 }
+
+export const customSkinWidgetId = (skin: CloveCustomSkin) => `custom:${ skin.id }`;
+
+export const customSkinWidgetDefinition = (skin: CloveCustomSkin): WidgetDefinition =>
+{
+    const width = Math.max(1, skin.states.default.width);
+    const height = Math.max(1, skin.states.default.height);
+    const preview: CatalogSkin = {
+        registryId: skin.id,
+        layout: 'default',
+        naturalWidth: width,
+        naturalHeight: height,
+        minWidth: 1,
+        minHeight: 1
+    };
+    const themeSkins = Object.fromEntries(CLOVE_THEMES.map(theme => [ theme.id, preview ])) as Partial<Record<CloveTheme, CatalogSkin>>;
+
+    return {
+        id: customSkinWidgetId(skin),
+        label: skin.name,
+        description: skin.kind === 'button' ? 'Imported button with custom states.' : 'Imported image region.',
+        category: 'Controls',
+        width,
+        height,
+        skin: themeSkins,
+        create: selectedTheme =>
+        {
+            const style = CLOVE_THEMES.find(theme => theme.id === selectedTheme)?.style || '0';
+            const type = skin.kind === 'button' ? 'button' : 'region';
+
+            return {
+                type,
+                attributes: {
+                    x: '0',
+                    y: '0',
+                    width: String(width),
+                    height: String(height),
+                    width_min: '1',
+                    height_min: '1',
+                    params: '16',
+                    style,
+                    name: skin.id,
+                    ...(selectedTheme.startsWith('illumina-') ? { theme: selectedTheme.replace('-', '_') } : {}),
+                    ...(type === 'button' ? { caption: encodeURIComponent(skin.name) } : {})
+                },
+                editorSkin: { registryId: skin.id, layout: 'default' }
+            };
+        }
+    };
+};
 
 export const CUSTOM_SKIN_STATES: HabboSkinState[] = [ 'default', 'hovering', 'pressed', 'selected', 'disabled' ];
 
@@ -76,6 +127,14 @@ export const normalizeCustomSkin = (skin: CloveCustomSkin): CloveCustomSkin | nu
 
     if(!states.default) return null;
 
+    const defaultRect = states.default as CloveSkinRect;
+    const normalizedStates = Object.fromEntries(Object.entries(states).map(([ state, rect ]) =>
+    {
+        if(state === 'default' || !rect) return [ state, rect ];
+
+        return [ state, clampRectLike(rect, imageWidth, imageHeight, defaultRect.width, defaultRect.height) ];
+    })) as CloveCustomSkin['states'];
+
     return {
         id: skin.id.replace(/[^A-Za-z0-9_.:-]/g, '_'),
         name: String(skin.name || 'Custom skin').slice(0, 80),
@@ -85,6 +144,16 @@ export const normalizeCustomSkin = (skin: CloveCustomSkin): CloveCustomSkin | nu
         dataUrl: skin.dataUrl,
         imageWidth,
         imageHeight,
-        states: states as CloveCustomSkin['states']
+        states: normalizedStates
     };
+};
+
+const clampRectLike = (rect: CloveSkinRect, imageWidth: number, imageHeight: number, width: number, height: number): CloveSkinRect =>
+{
+    const safeWidth = Math.max(1, Math.min(imageWidth, Math.round(width)));
+    const safeHeight = Math.max(1, Math.min(imageHeight, Math.round(height)));
+    const x = Math.max(0, Math.min(imageWidth - safeWidth, Math.round(Number(rect.x) || 0)));
+    const y = Math.max(0, Math.min(imageHeight - safeHeight, Math.round(Number(rect.y) || 0)));
+
+    return { x, y, width: safeWidth, height: safeHeight };
 };

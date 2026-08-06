@@ -204,6 +204,13 @@
     label { display: grid; gap: 3px; }
     span { color: #627079; font-size: 9px; text-transform: uppercase; }
     input { width: 100%; }
+
+    .clove-skin-aspect-hint {
+        grid-column: 1 / -1;
+        color: #68757d;
+        font-size: 10px;
+        line-height: 1.35;
+    }
 }
 
 .clove-skin-preview-column {

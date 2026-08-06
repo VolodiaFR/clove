@@ -11,7 +11,7 @@ import {
 import { catalogSkinGeometry, CLOVE_THEMES, CloveTheme, WidgetDefinition, WIDGET_CATALOG } from './widgetCatalog';
 import { CloveNodeSimulation, CloveProjectScenario, CloveSimulationData, loadCloveSimulationData } from './simulation';
 import { CloveEmbeddedAsset, generateCloveTsxExport } from './exportTsx';
-import { CloveCustomSkin, customSkinsRegistryExtension, normalizeCustomSkin } from './customSkins';
+import { CloveCustomSkin, customSkinWidgetDefinition, customSkinsRegistryExtension, normalizeCustomSkin } from './customSkins';
 import { CloveCustomSkinFile, CustomSkinImportDialog } from './CustomSkinImportDialog';
 import { HabboSelect } from './HabboSelect';
 import { HabboButton, HabboCheckbox, HabboChromeButton, HabboInput, HabboScrollArea, HabboText, UbuntuWindow } from './HabboUi';
@@ -347,8 +347,12 @@ export const CloveApp: FC = () =>
         return { resolvedActiveTabs, hiddenNodeIds, forcedVisibleNodeIds, geometryOverrides };
     }, [ activeTabs, allNodes, document.nodes, effectiveNodeSimulation, mode, resolveCaption ]);
 
-    const widgetItems = useMemo(() => WIDGET_CATALOG.filter(item =>
-        `${ item.label } ${ item.description }`.toLowerCase().includes(librarySearch.toLowerCase())), [ librarySearch ]);
+    const customWidgetItems = useMemo(() => customSkins.filter(skin => skin.kind === 'button').map(customSkinWidgetDefinition), [ customSkins ]);
+    const widgetCatalog = useMemo(() => [ ...customWidgetItems, ...WIDGET_CATALOG ], [ customWidgetItems ]);
+    const widgetItems = useMemo(() => widgetCatalog.filter(item =>
+        `${ item.label } ${ item.description }`.toLowerCase().includes(librarySearch.toLowerCase())), [ librarySearch, widgetCatalog ]);
+    const customControlItems = useMemo(() => customWidgetItems.filter(item =>
+        `${ item.label } ${ item.description }`.toLowerCase().includes(librarySearch.toLowerCase())), [ customWidgetItems, librarySearch ]);
     const rawSkins = useMemo(() => Object.values(registry.skins).filter(skin =>
         `${ skin.id } ${ skin.name }`.toLowerCase().includes(librarySearch.toLowerCase())), [ librarySearch, registry.skins ]);
     const filteredAssets = useMemo(() =>
@@ -1158,11 +1162,25 @@ export const CloveApp: FC = () =>
     {
         registerCustomSkins(inputs);
         setCustomSkinFile(null);
-        libraryScrollPositionsRef.current.images = { top: 0, left: 0 };
-        switchLibraryKind('images');
-        setLibraryFamily('all');
-        setAssetPackage('my-images');
-        setImageLibrarySearch(inputs.length === 1 ? inputs[0].name : inputs[0].name.replace(/\s+1$/, ''));
+        const search = inputs.length === 1 ? inputs[0].name : inputs[0].name.replace(/\s+1$/, '');
+        const hasButtons = inputs.some(skin => skin.kind === 'button');
+
+        if(hasButtons)
+        {
+            libraryScrollPositionsRef.current.controls = { top: 0, left: 0 };
+            switchLibraryKind('controls');
+            setLibraryFamily('all');
+            setControlLibrarySearch(search);
+        }
+        else
+        {
+            libraryScrollPositionsRef.current.images = { top: 0, left: 0 };
+            switchLibraryKind('images');
+            setLibraryFamily('all');
+            setAssetPackage('my-images');
+            setImageLibrarySearch(search);
+        }
+
         setError('');
     };
     const deleteCustomImage = (assetName: string) =>
@@ -1210,7 +1228,7 @@ export const CloveApp: FC = () =>
                 parsed = { id: widgetPayload };
             }
 
-            const definition = WIDGET_CATALOG.find(item => item.id === parsed.id);
+            const definition = widgetCatalog.find(item => item.id === parsed.id);
 
             if(definition) addWidget(definition, event.clientX, event.clientY, candidateId, parsed.theme || theme);
             return;
@@ -1571,7 +1589,8 @@ export const CloveApp: FC = () =>
                         </div>
                         <HabboScrollArea className="clove-unified-library" viewportRef={ libraryViewportRef }>
                             { libraryKind === 'controls' && <section className="clove-library-section clove-control-library">
-                                { CLOVE_THEMES.filter(item => libraryFamily === 'all' || item.id === libraryFamily).flatMap(family => widgetItems.filter(item => item.skin?.[family.id] || (!item.skin && family.id === 'ubuntu')).map(item => <LazyWidgetCard key={ `${ item.id }-${ family.id }` } definition={ item } theme={ family.id } onAdd={ definition => addWidget(definition, undefined, undefined, undefined, family.id) } />)) }
+                                { customControlItems.map(item => <LazyWidgetCard key={ item.id } definition={ item } theme={ theme } onAdd={ definition => addWidget(definition, undefined, undefined, undefined, theme) } />) }
+                                { CLOVE_THEMES.filter(item => libraryFamily === 'all' || item.id === libraryFamily).flatMap(family => widgetItems.filter(item => !item.id.startsWith('custom:') && (item.skin?.[family.id] || (!item.skin && family.id === 'ubuntu'))).map(item => <LazyWidgetCard key={ `${ item.id }-${ family.id }` } definition={ item } theme={ family.id } onAdd={ definition => addWidget(definition, undefined, undefined, undefined, family.id) } />)) }
                             </section> }
                             { libraryKind === 'images' && assetPackage === 'all' && <section className="clove-library-section clove-raw-skins">
                                 { rawSkins.filter(skin => !skin.id.startsWith('project:')).map(skin =>

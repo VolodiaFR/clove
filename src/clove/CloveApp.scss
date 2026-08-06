@@ -1729,6 +1729,33 @@ $stage: #747b82;
         image-rendering: pixelated;
     }
 
+    &.is-contained {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .clove-widget-thumbnail,
+        .clove-widget-thumbnail > canvas,
+        .clove-widget-thumbnail > img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .clove-widget-thumbnail.is-contained {
+            width: auto;
+            height: auto;
+            flex: 0 0 auto;
+        }
+
+        .clove-widget-thumbnail.is-contained > canvas,
+        .clove-widget-thumbnail.is-contained > img {
+            width: 100%;
+            height: 100%;
+        }
+    }
 }
 
 .clove-raw-skins {

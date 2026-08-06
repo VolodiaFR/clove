@@ -186,13 +186,33 @@ const transformAxis = (start: number, size: number, mode: string, delta: number)
     return [ start, size ];
 };
 
-const drawEntity = (context: CanvasRenderingContext2D, image: CanvasImageSource, source: RegistryEntity['rect'], destination: [number, number, number, number], tiledH: boolean, tiledV: boolean) =>
+const drawEntity = (context: CanvasRenderingContext2D, image: CanvasImageSource, source: RegistryEntity['rect'], destination: [number, number, number, number], tiledH: boolean, tiledV: boolean, contain = false) =>
 {
     const [ sourceX, sourceY, sourceWidth, sourceHeight ] = source;
     const [ destinationX, destinationY, destinationWidth, destinationHeight ] = destination;
 
     if(!tiledH && !tiledV)
     {
+        if(contain && sourceWidth > 0 && sourceHeight > 0 && destinationWidth > 0 && destinationHeight > 0)
+        {
+            const scale = Math.min(destinationWidth / sourceWidth, destinationHeight / sourceHeight);
+            const drawWidth = sourceWidth * scale;
+            const drawHeight = sourceHeight * scale;
+
+            context.drawImage(
+                image,
+                sourceX,
+                sourceY,
+                sourceWidth,
+                sourceHeight,
+                destinationX + (destinationWidth - drawWidth) / 2,
+                destinationY + (destinationHeight - drawHeight) / 2,
+                drawWidth,
+                drawHeight
+            );
+            return;
+        }
+
         context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destinationX, destinationY, destinationWidth, destinationHeight);
         return;
     }
@@ -273,8 +293,16 @@ const drawLayer = async (context: CanvasRenderingContext2D, layer: SkinRegistryL
     const top = layer.top ?? (layer.bottom === undefined ? 0 : canvasHeight - layer.bottom - (layer.height ?? natural.height));
     const width = layer.width ?? Math.max(0, canvasWidth - left - (layer.right || 0));
     const height = layer.height ?? Math.max(0, canvasHeight - top - (layer.bottom || 0));
-    const deltaWidth = width - natural.width;
-    const deltaHeight = height - natural.height;
+    const preserveAspect = layer.registryId.startsWith('project:');
+    const aspectScale = preserveAspect && natural.width > 0 && natural.height > 0
+        ? Math.min(width / natural.width, height / natural.height)
+        : 1;
+    const drawnWidth = preserveAspect ? natural.width * aspectScale : width;
+    const drawnHeight = preserveAspect ? natural.height * aspectScale : height;
+    const drawLeft = preserveAspect ? left + (width - drawnWidth) / 2 : left;
+    const drawTop = preserveAspect ? top + (height - drawnHeight) / 2 : top;
+    const deltaWidth = drawnWidth - natural.width;
+    const deltaHeight = drawnHeight - natural.height;
 
     for(const target of layout.entities)
     {
@@ -282,8 +310,12 @@ const drawLayer = async (context: CanvasRenderingContext2D, layer: SkinRegistryL
 
         if(!source?.rect) continue;
 
-        const [ destinationX, destinationWidth ] = transformAxis(target.rect[0], target.rect[2], target.scaleH, deltaWidth);
-        const [ destinationY, destinationHeight ] = transformAxis(target.rect[1], target.rect[3], target.scaleV, deltaHeight);
+        const [ destinationX, destinationWidth ] = preserveAspect
+            ? [ target.rect[0] * aspectScale, target.rect[2] * aspectScale ]
+            : transformAxis(target.rect[0], target.rect[2], target.scaleH, deltaWidth);
+        const [ destinationY, destinationHeight ] = preserveAspect
+            ? [ target.rect[1] * aspectScale, target.rect[3] * aspectScale ]
+            : transformAxis(target.rect[1], target.rect[3], target.scaleV, deltaHeight);
 
         if(destinationWidth <= 0 || destinationHeight <= 0) continue;
 
@@ -299,11 +331,11 @@ const drawLayer = async (context: CanvasRenderingContext2D, layer: SkinRegistryL
 
             tintedContext.drawImage(image, source.rect[0], source.rect[1], source.rect[2], source.rect[3], 0, 0, source.rect[2], source.rect[3]);
             tint(tinted, color);
-            drawEntity(context, tinted, [ 0, 0, tinted.width, tinted.height ], [ left + destinationX, top + destinationY, destinationWidth, destinationHeight ], target.scaleH === 'tiled', target.scaleV === 'tiled');
+            drawEntity(context, tinted, [ 0, 0, tinted.width, tinted.height ], [ drawLeft + destinationX, drawTop + destinationY, destinationWidth, destinationHeight ], !preserveAspect && target.scaleH === 'tiled', !preserveAspect && target.scaleV === 'tiled', preserveAspect);
         }
         else
         {
-            drawEntity(context, image, source.rect, [ left + destinationX, top + destinationY, destinationWidth, destinationHeight ], target.scaleH === 'tiled', target.scaleV === 'tiled');
+            drawEntity(context, image, source.rect, [ drawLeft + destinationX, drawTop + destinationY, destinationWidth, destinationHeight ], !preserveAspect && target.scaleH === 'tiled', !preserveAspect && target.scaleV === 'tiled', preserveAspect);
         }
     }
 };

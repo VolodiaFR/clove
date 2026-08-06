@@ -6,6 +6,8 @@ import { CLOVE_THEMES, CloveTheme, getCatalogSkin, WidgetDefinition } from './wi
 
 const thumbnailCache = new Map<string, string | null>();
 const thumbnailSubscribers = new Map<string, Set<(url: string) => void>>();
+const PREVIEW_MAX_WIDTH = 66;
+const PREVIEW_MAX_HEIGHT = 40;
 
 const publishThumbnail = (key: string, url: string) =>
 {
@@ -14,9 +16,24 @@ const publishThumbnail = (key: string, url: string) =>
     thumbnailSubscribers.delete(key);
 };
 
-const CachedSkinThumbnail: FC<{ registryId: string; layout: string }> = ({ registryId, layout }) =>
+const fitPreviewSize = (naturalWidth: number, naturalHeight: number, maxWidth = PREVIEW_MAX_WIDTH, maxHeight = PREVIEW_MAX_HEIGHT) =>
 {
-    const key = `${ registryId }:${ layout }:66x40`;
+    const width = Math.max(1, Math.round(naturalWidth));
+    const height = Math.max(1, Math.round(naturalHeight));
+    const scale = Math.min(1, maxWidth / width, maxHeight / height);
+
+    return {
+        width: Math.max(1, Math.round(width * scale)),
+        height: Math.max(1, Math.round(height * scale))
+    };
+};
+
+const CachedSkinThumbnail: FC<{ registryId: string; layout: string; naturalWidth?: number; naturalHeight?: number; preserveAspect?: boolean }> = ({ registryId, layout, naturalWidth, naturalHeight, preserveAspect = false }) =>
+{
+    const fitted = preserveAspect && naturalWidth && naturalHeight
+        ? fitPreviewSize(naturalWidth, naturalHeight)
+        : { width: PREVIEW_MAX_WIDTH, height: PREVIEW_MAX_HEIGHT };
+    const key = `${ registryId }:${ layout }:${ fitted.width }x${ fitted.height }${ preserveAspect ? ':contain' : '' }`;
     const hostRef = useRef<HTMLSpanElement>(null);
     const [ visible, setVisible ] = useState(false);
     const [ owner, setOwner ] = useState(false);
@@ -110,7 +127,7 @@ const CachedSkinThumbnail: FC<{ registryId: string; layout: string }> = ({ regis
         };
     }, [ key, owner ]);
 
-    return <span ref={ hostRef } className="clove-widget-thumbnail">
+    return <span ref={ hostRef } className={ `clove-widget-thumbnail${ preserveAspect ? ' is-contained' : '' }` } style={ preserveAspect ? { width: fitted.width, height: fitted.height } : undefined }>
         { url ? <img src={ url } alt="" /> : visible && owner ? <SkinRegistryView registryId={ registryId } layout={ layout } /> : null }
     </span>;
 };
@@ -119,6 +136,9 @@ export const LazyWidgetCard: FC<{ definition: WidgetDefinition; theme: CloveThem
 {
     const preview = getCatalogSkin(definition, theme);
     const familyLabel = CLOVE_THEMES.find(item => item.id === theme)?.label || theme;
+    const preserveAspect = definition.id.startsWith('custom:');
+    const naturalWidth = preview?.naturalWidth || definition.width;
+    const naturalHeight = preview?.naturalHeight || definition.height;
 
     return <button
         className={ `clove-widget-card ${ preview ? 'has-preview' : '' }` }
@@ -132,7 +152,7 @@ export const LazyWidgetCard: FC<{ definition: WidgetDefinition; theme: CloveThem
             event.dataTransfer.setData('application/x-clove-widget', JSON.stringify({ id: definition.id, theme }));
         } }
         onDoubleClick={ () => onAdd(definition) }>
-        { preview && <span className="clove-widget-preview"><CachedSkinThumbnail registryId={ preview.registryId } layout={ preview.layout } /></span> }
+        { preview && <span className={ `clove-widget-preview${ preserveAspect ? ' is-contained' : '' }` }><CachedSkinThumbnail registryId={ preview.registryId } layout={ preview.layout } naturalWidth={ naturalWidth } naturalHeight={ naturalHeight } preserveAspect={ preserveAspect } /></span> }
         <span><HabboText format={ HABBO_STYLES.u_bold }>{ definition.label }</HabboText><HabboText format={ HABBO_STYLES.u_small }>{ familyLabel }</HabboText></span>
     </button>;
 };
